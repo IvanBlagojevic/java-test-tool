@@ -1,0 +1,28 @@
+{
+ "persistent": false,
+ "id": null,
+ "roomName": null,
+ "description": "temporary conf created by java tests",
+ "enableAudio": true,
+ "enableVideo": true,
+ "enableWebCollaboration": false,
+
+ "audio": {
+   "spatialAudio": true,
+   "activeSpeaker": true
+ },
+ "video": { 
+   "maxResolution": "720P",
+   "mixerMode": "ACTIVE_SPEAKER_SWITCHED",
+   "maxCompositeWindows": 4,
+   "escalateOnBanwdith": 684000,
+   "escalateOnSessions": 16,
+   "allowDeescalation": true,
+   "maxFramerate": 15,
+   "maxBitrate": 2048000,
+   "nameOverlay": true
+ },
+ "controls": {
+   "enableEntryExitTones": true
+ }
+}

@@ -1,0 +1,13 @@
+mpaas:
+  scenarios:
+    - name: firstScenario
+      params:
+        config: firstScenario.json
+      tasks:
+        - name: login
+        - name: createConference
+          params:
+            config: createConf.json
+        - name: createSession
+          params:
+            config: createSession.json

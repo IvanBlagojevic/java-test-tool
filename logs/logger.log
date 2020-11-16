@@ -1,0 +1,27 @@
+2020-11-16 10:50:52,372 INFO o.s.b.StartupInfoLogger [main] Starting YamlApplication on RSM1876 with PID 11768 (C:\Users\iblagoj\Downloads\yaml\target\classes started by iblagoj in C:\Users\iblagoj\Downloads\yaml)
+2020-11-16 10:50:52,379 INFO o.s.b.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-11-16 10:50:53,352 INFO o.s.b.w.e.t.TomcatWebServer [main] Tomcat initialized with port(s): 8080 (http)
+2020-11-16 10:50:53,367 INFO o.a.j.l.DirectJDKLog [main] Initializing ProtocolHandler ["http-nio-8080"]
+2020-11-16 10:50:53,367 INFO o.a.j.l.DirectJDKLog [main] Starting service [Tomcat]
+2020-11-16 10:50:53,368 INFO o.a.j.l.DirectJDKLog [main] Starting Servlet engine: [Apache Tomcat/9.0.38]
+2020-11-16 10:50:53,445 INFO o.a.j.l.DirectJDKLog [main] Initializing Spring embedded WebApplicationContext
+2020-11-16 10:50:53,445 INFO o.s.b.w.s.c.ServletWebServerApplicationContext [main] Root WebApplicationContext: initialization completed in 1027 ms
+2020-11-16 10:50:53,564 INFO c.e.y.Runner [main] Executing scenario STARTED. Scenario name: firstScenario
+2020-11-16 10:50:53,694 INFO o.s.s.c.ExecutorConfigurationSupport [main] Initializing ExecutorService 'applicationTaskExecutor'
+2020-11-16 10:50:53,810 INFO o.s.s.c.ExecutorConfigurationSupport [main] Initializing ExecutorService 'taskScheduler'
+2020-11-16 10:50:53,818 INFO o.a.j.l.DirectJDKLog [main] Starting ProtocolHandler ["http-nio-8080"]
+2020-11-16 10:50:53,835 INFO o.s.b.w.e.t.TomcatWebServer [main] Tomcat started on port(s): 8080 (http) with context path ''
+2020-11-16 10:50:53,843 INFO o.s.b.StartupInfoLogger [main] Started YamlApplication in 1.902 seconds (JVM running for 2.523)
+2020-11-16 10:50:54,789 INFO c.e.y.c.i.LoginCommand [pool-2-thread-1] Login SUCCESSFUL for user with account id zz145_testing_account_id_266aa. ACCESS TOKEN: eyJraWQiOiJtcGFhcy1hY2Nlc3MtaWQiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6ejE0NV90ZXN0aW5nX2FjY291bnRfaWRfMjY2YWEiLCJyb2xlcyI6InVzZXIiLCJpYXQiOjE2MDU1MjAyNTQsImV4cCI6MTYwNTU0OTA1NH0.IIGLuyGgEASw0RdMKkD6jXX5QsG-gXbwONkgeTofyv4
+2020-11-16 10:50:54,796 INFO c.e.y.c.i.SubscriptionCommand [pool-2-thread-1] Creating subscription STARTED for account id: zz145_testing_account_id_266aa
+2020-11-16 10:50:55,362 INFO c.e.y.c.i.SubscriptionCommand [pool-2-thread-1] Creating subscription FINISHED for account id zz145_testing_account_id_266aa. SUBSCRIPTION_ID: 2a916d06-0218-4c10-8a61-25e9b1c89839
+2020-11-16 10:50:55,376 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference STARTED for conference room conference-zz145_testing_account_id_266aa-0
+2020-11-16 10:50:55,977 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference FINISHED for conference room conference-zz145_testing_account_id_266aa-0. CONFERENCE_ID: 6fd5df6909934906023c6680367255bc79444a6c
+2020-11-16 10:50:55,978 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference STARTED for conference room conference-zz145_testing_account_id_266aa-1
+2020-11-16 10:50:56,568 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference FINISHED for conference room conference-zz145_testing_account_id_266aa-1. CONFERENCE_ID: e4126f4163a36a3c4cdcca4e48cc220cf59ec849
+2020-11-16 10:50:56,569 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference STARTED for conference room conference-zz145_testing_account_id_266aa-2
+2020-11-16 10:50:57,161 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference FINISHED for conference room conference-zz145_testing_account_id_266aa-2. CONFERENCE_ID: 3321e88660427938f51afed78a38929f430a6a93
+2020-11-16 10:50:57,162 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference STARTED for conference room conference-zz145_testing_account_id_266aa-3
+2020-11-16 10:50:57,752 INFO c.e.y.c.i.ConferenceCommand [pool-2-thread-1] Creating conference FINISHED for conference room conference-zz145_testing_account_id_266aa-3. CONFERENCE_ID: 2775ec73d4ce8b99e6c677c9ae906d797649c32e
+2020-11-16 10:50:57,765 INFO c.e.y.c.i.SessionCommand [pool-2-thread-1] Creating sessions STARTED for user zz145_testing_account_id_266aa
+2020-11-16 10:50:58,431 INFO c.e.y.c.i.SessionCommand [pool-2-thread-1] Creating sessions FINISHED for user zz145_testing_account_id_266aa SESSION_ID: 4dbb48768739f022bd66175c8d3ad462cff6792c

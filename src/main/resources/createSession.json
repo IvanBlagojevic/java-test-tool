@@ -1,0 +1,19 @@
+{
+  "sessionType": "WEBRTC",
+  "displayName": "test user",
+  "opaqueData": "",
+  "operation": {
+    "join": {
+      "resourceType": "CONFERENCE",
+      "resourceId": ""
+    },
+    "stream": {
+      "audio": {
+        "mute": false
+      },
+      "video": {
+        "mute": false
+      }
+    }
+  }
+}
