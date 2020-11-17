@@ -12,7 +12,7 @@ public interface AamsConnection {
 
     void deleteSession(String sessionId);
 
-    void injectAudioViaXml(String sessionId);
+    void injectAudioViaVxml(String sessionId);
 
     void injectAudioViaTts(String sessionId);
 

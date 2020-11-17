@@ -82,7 +82,7 @@ public class AamsConnectionImpl implements AamsConnection {
     }
 
     @Override
-    public void injectAudioViaXml(String sessionId) {
+    public void injectAudioViaVxml(String sessionId) {
         String url = getBaseUrl() + "/mediacontrol/" + CONTROL_CONTEXT + "/sessions/" + sessionId;
         HttpEntity<String> entity = new HttpEntity<>(String.format(AamsEntityEnum.INJECT_AUDIO_XML.getEntity(), sessionId), getHttpHeader());
         execute(url, HttpMethod.POST, entity);
@@ -109,4 +109,5 @@ public class AamsConnectionImpl implements AamsConnection {
     private String parseSdpOfferFromResponse(String response) {
         return StringUtils.substringBetween(response, "<sdpOffer>", "</sdpOffer>");
     }
+
 }
