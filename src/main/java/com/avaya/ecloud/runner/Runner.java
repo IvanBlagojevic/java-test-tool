@@ -1,4 +1,4 @@
-package com.avaya.ecloud;
+package com.avaya.ecloud.runner;
 
 import com.avaya.ecloud.cache.ScenarioCache;
 import com.avaya.ecloud.configuration.ScenariosConfig;
