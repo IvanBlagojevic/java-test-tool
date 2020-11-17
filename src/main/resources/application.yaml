@@ -11,3 +11,5 @@ mpaas:
         - name: createSession
           params:
             config: createSession.json
+        - name: discoverResources
+
