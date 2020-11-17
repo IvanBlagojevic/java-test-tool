@@ -1,4 +1,4 @@
-package com.example.yaml.model.response;
+package com.example.yaml.model.response.login;
 
 public class LoginResponse {
 
