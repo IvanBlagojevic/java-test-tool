@@ -4,10 +4,6 @@ import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.cache.ScenarioCache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.command.CommandData;
-import com.avaya.ecloud.network.ClientWebSocketHandler;
-import com.oracle.tools.packager.Log;
-import org.apache.tomcat.websocket.WsWebSocketContainer;
-import org.apache.tomcat.websocket.server.WsHttpUpgradeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -15,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
