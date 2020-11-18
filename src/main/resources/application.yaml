@@ -12,4 +12,5 @@ mpaas:
           params:
             config: createSession.json
         - name: discoverResources
+        - name: clientConnect
 

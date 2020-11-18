@@ -34,7 +34,6 @@ public class LoginCommand extends BaseCommand implements Command {
         this.subscriptionCommand = subscriptionCommand;
     }
 
-
     private String getAccountId(CommandData commandData) {
         String name = commandData.getName();
         if (name.equalsIgnoreCase("login")) {

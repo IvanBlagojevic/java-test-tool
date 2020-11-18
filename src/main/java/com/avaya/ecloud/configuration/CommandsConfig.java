@@ -16,13 +16,17 @@ public class CommandsConfig {
     private Command conferenceCommand;
     private Command sessionCommand;
     private Command resourceCommand;
+    private Command clientCommand;
 
     @Autowired
-    public CommandsConfig(@Qualifier("loginCommand") Command loginCommand, @Qualifier("conferenceCommand") Command conferenceCommand, @Qualifier("sessionCommand") Command sessionCommand, @Qualifier("resourceCommand") Command resourceCommand) {
+    public CommandsConfig(@Qualifier("loginCommand") Command loginCommand, @Qualifier("conferenceCommand") Command conferenceCommand,
+                          @Qualifier("sessionCommand") Command sessionCommand, @Qualifier("resourceCommand") Command resourceCommand,
+                          @Qualifier("clientCommand") Command clientCommand) {
         this.loginCommand = loginCommand;
         this.conferenceCommand = conferenceCommand;
         this.sessionCommand = sessionCommand;
         this.resourceCommand = resourceCommand;
+        this.clientCommand = clientCommand;
     }
 
     @Bean
@@ -32,6 +36,7 @@ public class CommandsConfig {
         commandMap.put("login", loginCommand);
         commandMap.put("createSession", sessionCommand);
         commandMap.put("discoverResources", resourceCommand);
+        commandMap.put("clientConnect", clientCommand);
         return commandMap;
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+
 @Component("conferenceCommand")
 public class ConferenceCommand extends BaseCommand implements Command {
 

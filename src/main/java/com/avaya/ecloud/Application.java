@@ -21,7 +21,4 @@ public class Application {
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
-
-
 }
-
