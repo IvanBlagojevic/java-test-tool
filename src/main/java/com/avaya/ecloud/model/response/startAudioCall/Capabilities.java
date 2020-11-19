@@ -5,8 +5,8 @@ public class Capabilities {
     private Capability holdCapability;
     private Capability sendDtmfCapability;
     private Capability unholdCapability;
-    private Capability updateVideoChannelsCapability;
-    private Capability updatecallpropertiesCapability;
+    private Capability updateVideoChanelsCapability;
+    private UpdatePropertyCapability updatecallpropertiesCapability;
 
     public Capabilities() {
     }
@@ -35,19 +35,19 @@ public class Capabilities {
         this.unholdCapability = unholdCapability;
     }
 
-    public Capability getUpdateVideoChannelsCapability() {
-        return updateVideoChannelsCapability;
+    public Capability getUpdateVideoChanelsCapability() {
+        return updateVideoChanelsCapability;
     }
 
-    public void setUpdateVideoChannelsCapability(Capability updateVideoChannelsCapability) {
-        this.updateVideoChannelsCapability = updateVideoChannelsCapability;
+    public void setUpdateVideoChanelsCapability(Capability updateVideoChanelsCapability) {
+        this.updateVideoChanelsCapability = updateVideoChanelsCapability;
     }
 
-    public Capability getUpdatecallpropertiesCapability() {
+    public UpdatePropertyCapability getUpdatecallpropertiesCapability() {
         return updatecallpropertiesCapability;
     }
 
-    public void setUpdatecallpropertiesCapability(Capability updatecallpropertiesCapability) {
+    public void setUpdatecallpropertiesCapability(UpdatePropertyCapability updatecallpropertiesCapability) {
         this.updatecallpropertiesCapability = updatecallpropertiesCapability;
     }
 }

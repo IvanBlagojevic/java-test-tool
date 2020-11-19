@@ -8,6 +8,7 @@ import com.avaya.ecloud.model.requests.session.CreateSessionRequest;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
 import com.avaya.ecloud.model.response.session.SessionResponse;
 import com.avaya.ecloud.model.response.session.SessionToken;
+import com.avaya.ecloud.model.response.startAudioCall.StartAudioCallResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -28,6 +29,15 @@ public class CommandUtil {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandUtil.class);
 
+    public static String getCallIdFromResponse(String response) {
+        try {
+            StartAudioCallResponse startAudioCallResponse = OBJECT_MAPPER.readValue(response, StartAudioCallResponse.class);
+            return startAudioCallResponse.getCallId();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
 
     public static CreateConferenceRequest getCreateConferenceRequestFromFile(String fileName) {
         try {

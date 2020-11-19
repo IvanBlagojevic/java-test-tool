@@ -10,9 +10,9 @@ public class AudioCall {
     private String privacy;
     private List<Participant> participants;
     private String conferenceData;
-    private String desiredBandwidth;
     private Channel audioChannel;
     private List<Channel> videoChannels;
+    private String desiredBandwidth;
 
     public List<Channel> getVideoChannels() {
         return videoChannels;

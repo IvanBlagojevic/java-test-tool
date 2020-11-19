@@ -172,4 +172,14 @@ public class ResponseCacheImpl implements ResponseCache {
     public String getServicesUri(String scenarioName) {
         return getResponseDetail(scenarioName).getServicesUri();
     }
+
+    @Override
+    public void saveCallId(String scenarioName, String callId) {
+        getResponseDetail(scenarioName).setCallId(callId);
+    }
+
+    @Override
+    public String getCallId(String scenarioName) {
+        return getResponseDetail(scenarioName).getCallId();
+    }
 }

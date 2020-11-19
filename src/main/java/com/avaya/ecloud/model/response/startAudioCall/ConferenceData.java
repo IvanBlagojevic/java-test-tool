@@ -4,14 +4,22 @@ public class ConferenceData {
 
     private boolean conference;
     private boolean empty;
+    private boolean webRTCAbleRemote;
     private boolean isForceRouting;
-    private boolean webRTCableRemote;
 
     public ConferenceData() {
     }
 
     public boolean isConference() {
         return conference;
+    }
+
+    public boolean getIsForceRouting() {
+        return isForceRouting;
+    }
+
+    public void setIsForceRouting(boolean isForceRouting) {
+        this.isForceRouting = isForceRouting;
     }
 
     public void setConference(boolean conference) {
@@ -26,19 +34,11 @@ public class ConferenceData {
         this.empty = empty;
     }
 
-    public boolean isForceRouting() {
-        return isForceRouting;
+    public boolean isWebRTCAbleRemote() {
+        return webRTCAbleRemote;
     }
 
-    public void setForceRouting(boolean forceRouting) {
-        isForceRouting = forceRouting;
-    }
-
-    public boolean isWebRTCableRemote() {
-        return webRTCableRemote;
-    }
-
-    public void setWebRTCableRemote(boolean webRTCableRemote) {
-        this.webRTCableRemote = webRTCableRemote;
+    public void setWebRTCAbleRemote(boolean webRTCableRemote) {
+        this.webRTCAbleRemote = webRTCableRemote;
     }
 }

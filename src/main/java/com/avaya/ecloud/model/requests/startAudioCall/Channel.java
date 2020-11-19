@@ -2,18 +2,18 @@ package com.avaya.ecloud.model.requests.startAudioCall;
 
 public class Channel {
 
-    private String channelId;
+    private Integer channelId;
     private String state;
     private String direction;
 
     public Channel() {
     }
 
-    public String getChannelId() {
+    public Integer getChannelId() {
         return channelId;
     }
 
-    public void setChannelId(String channelId) {
+    public void setChannelId(Integer channelId) {
         this.channelId = channelId;
     }
 

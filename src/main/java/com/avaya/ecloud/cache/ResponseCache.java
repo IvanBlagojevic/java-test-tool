@@ -67,6 +67,10 @@ public interface ResponseCache {
 
     String getServicesUri(String scenarioName);
 
+    void saveCallId(String scenarioName, String callId);
+
+    String getCallId(String scenarioName);
+
 
 }
 

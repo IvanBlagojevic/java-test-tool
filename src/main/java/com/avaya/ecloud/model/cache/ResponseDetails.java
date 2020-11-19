@@ -22,9 +22,18 @@ public class ResponseDetails {
     private String callsUri;
     private String eventsUri;
     private String servicesUri;
+    private String callId;
 
 
     public ResponseDetails() {
+    }
+
+    public String getCallId() {
+        return callId;
+    }
+
+    public void setCallId(String callId) {
+        this.callId = callId;
     }
 
     public ResponseDetails(String accountId, String accountSecret, String authToken) {

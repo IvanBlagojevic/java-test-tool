@@ -7,7 +7,6 @@ import com.avaya.ecloud.commands.utils.CommandUtil;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
-import com.avaya.ecloud.model.response.startAudioCall.StartAudioCallResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import static com.avaya.ecloud.commands.utils.CommandUtil.getCallIdFromResponse;
 
 @Component("createNewCallCommand")
 public class CreateNewCallCommand extends BaseCommand implements Command {
@@ -38,16 +39,29 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
 
         String sessionToken = getResponseCache().getSessionToken(scenario);
         HttpHeaders requestHeader = CommandUtil.getRequestHeader(sessionToken, HttpHeaderEnum.CREATE_NEW_CALL);
-        requestHeader.set("X-Forwarded-For", "10.133.1.1");
 
         HttpEntity<String> entity = CommandUtil.getEntityFromObject(request, requestHeader);
 
         try {
-            StartAudioCallResponse response = getRestTemplate().postForObject(url, entity, StartAudioCallResponse.class);
-            String callId = response.getCallId();
-            System.out.println("CALL ID " + callId);
+            logInfoOnStart(sessionId);
+            String response = getRestTemplate().postForObject(url, entity, String.class);
+            String callId = getCallIdFromResponse(response);
+            getResponseCache().saveCallId(scenario, callId);
+            logInfoOnFinish(sessionId, callId);
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            logError(sessionId, e);
         }
+    }
+
+    private void logInfoOnStart(String sessionId) {
+        LOGGER.info("Creating new call STARTED for session id " + sessionId);
+    }
+
+    private void logError(String sessionId, Exception e) {
+        LOGGER.error("Creating new call ERROR for session id: " + sessionId + ". ERROR MESSAGE: " + e.getMessage(), e);
+    }
+
+    private void logInfoOnFinish(String sessionId, String id) {
+        LOGGER.info("Creating new call FINISHED for session id " + sessionId + ". CALL_ID: " + id);
     }
 }
