@@ -11,6 +11,7 @@ import com.avaya.ecloud.model.command.CommandData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceDiscoveryCommand.class);
 
     @Autowired
-    public ResourceDiscoveryCommand(ScenarioCache scenarioCache, ResponseCache responseCache, RestTemplate restTemplate) {
+    public ResourceDiscoveryCommand(ScenarioCache scenarioCache, ResponseCache responseCache, @Qualifier("restTemplate") RestTemplate restTemplate) {
         super(scenarioCache, responseCache, restTemplate);
     }
 

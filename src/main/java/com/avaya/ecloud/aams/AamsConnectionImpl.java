@@ -3,23 +3,13 @@ package com.avaya.ecloud.aams;
 import com.avaya.ecloud.model.aams.SessionInfo;
 import com.avaya.ecloud.model.enums.AamsEntityEnum;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 
 @Component
 public class AamsConnectionImpl implements AamsConnection {
@@ -28,8 +18,9 @@ public class AamsConnectionImpl implements AamsConnection {
     private static final String CONTROL_CONTEXT = "java-tests";
     private static final Logger LOGGER = LoggerFactory.getLogger(AamsConnectionImpl.class);
 
-    public AamsConnectionImpl() throws KeyManagementException, NoSuchAlgorithmException {
-        this.restTemplate = getAamsRestTemplate();
+    @Autowired
+    public AamsConnectionImpl(@Qualifier("restTemplate") RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -99,36 +90,6 @@ public class AamsConnectionImpl implements AamsConnection {
 
     private String parseSdpOfferFromResponse(String response) {
         return StringUtils.substringBetween(response, "<sdpOffer>", "</sdpOffer>");
-    }
-
-    private RestTemplate getAamsRestTemplate() throws NoSuchAlgorithmException, KeyManagementException {
-        RestTemplateBuilder builder = new RestTemplateBuilder();
-        TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-
-                    public void checkClientTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-
-                    public void checkServerTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-                }
-        };
-        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                .build();
-        HttpComponentsClientHttpRequestFactory customRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        customRequestFactory.setHttpClient(httpClient);
-        customRequestFactory.setConnectTimeout(30000);
-        customRequestFactory.setConnectionRequestTimeout(30000);
-        return builder.requestFactory(() -> customRequestFactory).build();
     }
 
     private HttpHeaders getHttpHeader() {

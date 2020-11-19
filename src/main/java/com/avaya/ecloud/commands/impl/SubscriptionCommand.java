@@ -12,6 +12,7 @@ import com.avaya.ecloud.model.response.SubscriptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +23,7 @@ public class SubscriptionCommand extends BaseCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionCommand.class);
 
     @Autowired
-    public SubscriptionCommand(RestTemplate restTemplate, ScenarioCache scenarioCache, ResponseCache responseCache) {
+    public SubscriptionCommand(@Qualifier("restTemplate") RestTemplate restTemplate, ScenarioCache scenarioCache, ResponseCache responseCache) {
         super(scenarioCache, responseCache, restTemplate);
     }
 

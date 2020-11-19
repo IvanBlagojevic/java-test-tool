@@ -23,7 +23,7 @@ public class ClientConnectCommand extends BaseCommand implements Command {
     @Autowired
     public ClientConnectCommand(ScenarioCache scenarioCache,
                                 ResponseCache responseCache,
-                                RestTemplate restTemplate,
+                                @Qualifier("restTemplate") RestTemplate restTemplate,
                                 @Qualifier("standardWebSocketClient") WebSocketClient webSocketClient,
                                 @Qualifier("webSocketHandler") WebSocketHandler webSocketHandler) {
         super(scenarioCache, responseCache, restTemplate);

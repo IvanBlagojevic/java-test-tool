@@ -13,4 +13,9 @@ mpaas:
             config: createSession.json
         - name: discoverResources
         - name: clientConnect
-
+        - name: activateCall
+          params:
+            config: activateCalls.json
+        - name: startAudioCall
+          params:
+            config: startAudioCall.json

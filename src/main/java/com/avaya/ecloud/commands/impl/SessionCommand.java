@@ -13,6 +13,7 @@ import com.avaya.ecloud.commands.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +26,7 @@ public class SessionCommand extends BaseCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionCommand.class);
 
     @Autowired
-    public SessionCommand(ScenarioCache scenarioCache, ResponseCache responseCache, RestTemplate restTemplate) {
+    public SessionCommand(ScenarioCache scenarioCache, ResponseCache responseCache, @Qualifier("restTemplate") RestTemplate restTemplate) {
         super(scenarioCache, responseCache, restTemplate);
     }
 

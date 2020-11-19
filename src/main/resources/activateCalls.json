@@ -1,0 +1,20 @@
+{
+  "action": "ACTIVATE",
+  "service": "CALLS",
+  "extendedData": {
+    "mode": "COMPUTER",
+    "mediaServiceType": "WEBRTC",
+    "recoveryToken": null,
+    "videoBandwidth": null,
+    "register": true,
+    "subscribeCMEvents": true,
+    "userAgentData": {
+      "appId": "spaces client",
+      "appVersion": "1.0",
+      "sdk": null,
+      "sdkVersion": null,
+      "platform": null,
+      "platformVersion": null
+    }
+  }
+}

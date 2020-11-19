@@ -1,12 +1,13 @@
 package com.avaya.ecloud.commands.utils;
 
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
+import com.avaya.ecloud.model.requests.SubscriptionRequest;
+import com.avaya.ecloud.model.requests.activateService.ActivateService;
 import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
 import com.avaya.ecloud.model.requests.session.CreateSessionRequest;
+import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
 import com.avaya.ecloud.model.response.session.SessionResponse;
 import com.avaya.ecloud.model.response.session.SessionToken;
-import com.avaya.ecloud.model.requests.LoginRequest;
-import com.avaya.ecloud.model.requests.SubscriptionRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -18,6 +19,8 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class CommandUtil {
@@ -28,28 +31,38 @@ public class CommandUtil {
 
     public static CreateConferenceRequest getCreateConferenceRequestFromFile(String fileName) {
         try {
-            InputStream is = CreateConferenceRequest.class.getClassLoader().getResourceAsStream(fileName);
-            return OBJECT_MAPPER.readValue(is, CreateConferenceRequest.class);
+            String jsonString = getJsonFromFile(fileName);
+            return OBJECT_MAPPER.readValue(jsonString, CreateConferenceRequest.class);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    public static LoginRequest getLoginRequestFromFile(String fileName) {
+    public static AudioCall getAudioCallRequestFromFile(String fileName) {
         try {
             InputStream is = CreateConferenceRequest.class.getClassLoader().getResourceAsStream(fileName);
-            return OBJECT_MAPPER.readValue(is, LoginRequest.class);
+            return OBJECT_MAPPER.readValue("{    \"sessionId\":\"dd3b86e7e03b424a2c62683a3d09f12127ef54c3\",    \"subject\":\"demo call\",    \"priority\":null,    \"privacy\":null,    \"participants\":    [{        \"participantId\":null,        \"remoteDisplayName\":\"\",        \"remoteAddress\":\"11111\"    }],    \"conferenceData\":null,    \"audioChannel\":{        \"channelId\":1,        \"state\":\"ENABLE\",        \"direction\":\"SEND_RECEIVE\"    },    \"videoChannels\":[],    \"desiredBandwidth\":null}", AudioCall.class);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    public static String getJsonFromFile(String fileName) {
+        try {
+            return new String(Files.readAllBytes(Paths.get("src/main/resources/" + fileName)));
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
 
     public static SubscriptionRequest getSubscriptionRequestFromFile(String fileName) {
         try {
-            InputStream is = CreateConferenceRequest.class.getClassLoader().getResourceAsStream(fileName);
-            return OBJECT_MAPPER.readValue(is, SubscriptionRequest.class);
+            String jsonString = getJsonFromFile(fileName);
+            return OBJECT_MAPPER.readValue(jsonString, SubscriptionRequest.class);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -59,8 +72,18 @@ public class CommandUtil {
 
     public static CreateSessionRequest getCreateSessionRequestFromFile(String fileName) {
         try {
-            InputStream is = CreateConferenceRequest.class.getClassLoader().getResourceAsStream(fileName);
-            return OBJECT_MAPPER.readValue(is, CreateSessionRequest.class);
+            String jsonString = getJsonFromFile(fileName);
+            return OBJECT_MAPPER.readValue(jsonString, CreateSessionRequest.class);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static ActivateService getActivateServiceRequestFromFile(String fileName) {
+        try {
+            String jsonString = getJsonFromFile(fileName);
+            return OBJECT_MAPPER.readValue(jsonString, ActivateService.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);

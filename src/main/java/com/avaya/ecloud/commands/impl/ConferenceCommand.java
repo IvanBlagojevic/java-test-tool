@@ -62,7 +62,7 @@ public class ConferenceCommand extends BaseCommand implements Command {
 
         CreateConferenceRequest conferenceRequest = CommandUtil.getCreateConferenceRequestFromFile((String) commandData.getConfig().get("config"));
 
-        for (int i = 0; i <= conferenceCounter; i++) {
+        for (int i = 0; i < conferenceCounter; i++) {
             StringBuilder builder = new StringBuilder();
             conferenceRequest.setRoomName(builder.append("conference-").append(accountId).append("-").append(i).toString());
 

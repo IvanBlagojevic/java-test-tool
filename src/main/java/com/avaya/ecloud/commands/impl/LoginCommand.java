@@ -29,7 +29,7 @@ public class LoginCommand extends BaseCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginCommand.class);
 
     @Autowired
-    public LoginCommand(RestTemplate restTemplate, ScenarioCache scenarioCache, ResponseCache responseCache, @Qualifier("subscriptionCommand") Command subscriptionCommand) {
+    public LoginCommand(@Qualifier("restTemplate") RestTemplate restTemplate, ScenarioCache scenarioCache, ResponseCache responseCache, @Qualifier("subscriptionCommand") Command subscriptionCommand) {
         super(scenarioCache, responseCache, restTemplate);
         this.subscriptionCommand = subscriptionCommand;
     }

@@ -1,0 +1,20 @@
+{
+  "sessionId": null,
+  "subject": "demo call",
+  "priority": null,
+  "privacy": null,
+  "participants": [
+    {
+      "participantId": "1",
+      "remoteDisplayName": "",
+      "remoteAddress": "11111"
+    }
+  ],
+  "conferenceData": null,
+  "audioChannel": {
+    "channelId": 1,
+    "state": "ENABLE",
+    "direction": "SEND_RECEIVE"
+  },
+  "desiredBandwidth": null
+}
