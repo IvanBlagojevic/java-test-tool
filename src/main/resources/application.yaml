@@ -1,6 +1,6 @@
 mpaas:
   scenarios:
-    - name: firstScenario
+    - name: FIRST_SCENARIO
       params:
         config: firstScenario.json
       tasks:
@@ -12,10 +12,29 @@ mpaas:
           params:
             config: createSession.json
         - name: discoverResources
-        - name: clientConnect
+        - name: connectWebSocket
         - name: activateCall
           params:
             config: activateCalls.json
         - name: startAudioCall
           params:
             config: startAudioCall.json
+    - name: SECOND_SCENARIO
+      params:
+          config: firstScenario.json
+      tasks:
+          - name: login
+          - name: createConference
+            params:
+              config: createConf.json
+          - name: createSession
+            params:
+              config: createSession.json
+          - name: discoverResources
+          - name: connectWebSocket
+          - name: activateCall
+            params:
+              config: activateCalls.json
+          - name: startAudioCall
+            params:
+              config: startAudioCall.json

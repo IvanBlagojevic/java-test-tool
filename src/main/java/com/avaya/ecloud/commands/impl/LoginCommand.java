@@ -7,7 +7,7 @@ import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.response.LoginResponse;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.commands.utils.CommandUtil;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.requests.LoginRequest;
 import org.slf4j.Logger;
@@ -65,7 +65,7 @@ public class LoginCommand extends BaseCommand implements Command {
 
         LoginRequest loginRequest = new LoginRequest(accountId, accountSecret);
 
-        HttpEntity<String> entity = CommandUtil.getEntityFromObject(loginRequest, CommandUtil.getRequestHeader(null, HttpHeaderEnum.LOGIN));
+        HttpEntity<String> entity = ModelUtil.getEntityFromObject(loginRequest, ModelUtil.getRequestHeader(null, HttpHeaderEnum.LOGIN));
 
         try {
             LoginResponse response = getRestTemplate().postForObject(getLoginUrl(scenario), entity, LoginResponse.class);

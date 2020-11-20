@@ -3,7 +3,7 @@ package com.avaya.ecloud.commands.impl;
 import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.cache.ScenarioCache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.commands.utils.CommandUtil;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.requests.activateService.ActivateService;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
@@ -33,10 +33,10 @@ public class ActivateServiceCommand extends BaseCommand implements Command {
 
         //TODO what about basic auth header?
 
-        HttpHeaders requestHeader = CommandUtil.getRequestHeader(sessionToken, HttpHeaderEnum.ACTIVATE_SERVICE);
-        ActivateService request = CommandUtil.getActivateServiceRequestFromFile((String) commandData.getConfig().get("config"));
+        HttpHeaders requestHeader = ModelUtil.getRequestHeader(sessionToken, HttpHeaderEnum.ACTIVATE_SERVICE);
+        ActivateService request = ModelUtil.getActivateServiceRequestFromFile((String) commandData.getConfig().get("config"));
 
-        HttpEntity<String> entity = CommandUtil.getEntityFromObject(request, requestHeader);
+        HttpEntity<String> entity = ModelUtil.getEntityFromObject(request, requestHeader);
 
         try {
             getRestTemplate().postForEntity(url, entity, String.class);

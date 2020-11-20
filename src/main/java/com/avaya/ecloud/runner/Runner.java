@@ -103,8 +103,6 @@ public class Runner {
             String scenario = entry.getKey();
             logInfo(scenario);
             Map<Command, CommandData> clientsMap = entry.getValue();
-
-
             getExecutor().getExecutorService().execute(() -> executeScenario(clientsMap));
         }
     }
@@ -114,19 +112,6 @@ public class Runner {
             clientEntry.getKey().execute(clientEntry.getValue());
         }
     }
-
-
-//    @PostConstruct
-//    public void run() throws Exception {
-//        setScenarios();
-//        setBaseUrl();
-//        Map<String, List<Client>> clients = getClients();
-//        for (Map.Entry<String, List<Client>> entry : clients.entrySet()) {
-//            String scenario = entry.getKey();
-//            logInfo(scenario);
-//            getExecutor().getExecutorService().execute(() -> entry.getValue().forEach(e -> e.execute(scenario)));
-//        }
-//    }
 
     private void logInfo(String name) {
         LOGGER.info("Executing scenario STARTED. Scenario name: " + name);

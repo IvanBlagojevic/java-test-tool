@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.cache.ScenarioCache;
-import com.avaya.ecloud.commands.utils.CommandUtil;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.response.resource.Resource;
 import com.avaya.ecloud.model.response.resource.ResourceDiscoveryResponse;
@@ -33,7 +33,7 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
     @Override
     public void execute(CommandData commandData) {
         String scenario = commandData.getParent();
-        HttpEntity<String> entity = CommandUtil.getEntityFromObject(null, CommandUtil.getRequestHeader(getResponseCache().getSessionToken(scenario), HttpHeaderEnum.RESOURCE_DISCOVERY));
+        HttpEntity<String> entity = ModelUtil.getEntityFromObject(null, ModelUtil.getRequestHeader(getResponseCache().getSessionToken(scenario), HttpHeaderEnum.RESOURCE_DISCOVERY));
         try {
             logInfoOnStart();
             ResponseEntity<ResourceDiscoveryResponse> responseEntity = getRestTemplate().exchange(getResponseCache().getUserAgentURL(scenario), HttpMethod.GET, entity, ResourceDiscoveryResponse.class);

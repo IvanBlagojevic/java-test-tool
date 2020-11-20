@@ -1,6 +1,8 @@
-package com.avaya.ecloud.commands.utils;
+package com.avaya.ecloud.utils;
 
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
+import com.avaya.ecloud.model.events.DiscoveryEvent;
+import com.avaya.ecloud.model.events.NotificationEvent;
 import com.avaya.ecloud.model.requests.SubscriptionRequest;
 import com.avaya.ecloud.model.requests.activateService.ActivateService;
 import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
@@ -24,10 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-public class CommandUtil {
+public class ModelUtil {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommandUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelUtil.class);
 
     public static String getCallIdFromResponse(String response) {
         try {
@@ -48,6 +50,25 @@ public class CommandUtil {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    public static DiscoveryEvent getDiscoveryEventFromPayload(String payload) {
+        try {
+            return OBJECT_MAPPER.readValue(payload, DiscoveryEvent.class);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static NotificationEvent getNotificationEventFromPayload(String payload) {
+        try {
+            return OBJECT_MAPPER.readValue(payload, NotificationEvent.class);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
 
     public static AudioCall getAudioCallRequestFromFile(String fileName) {
         try {

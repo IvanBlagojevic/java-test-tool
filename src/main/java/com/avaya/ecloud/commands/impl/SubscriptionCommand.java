@@ -5,7 +5,7 @@ import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.commands.utils.CommandUtil;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.requests.SubscriptionRequest;
 import com.avaya.ecloud.model.response.SubscriptionResponse;
@@ -32,10 +32,10 @@ public class SubscriptionCommand extends BaseCommand implements Command {
         String scenario = commandData.getParent();
         String accountId = (String) commandData.getConfig().get("accountId");
 
-        SubscriptionRequest request = CommandUtil.getSubscriptionRequestFromFile((String) commandData.getConfig().get("config"));
+        SubscriptionRequest request = ModelUtil.getSubscriptionRequestFromFile((String) commandData.getConfig().get("config"));
         request.setCallbackURL(getScenarioCache().getSubscriptionUrl(scenario));
 
-        HttpEntity<String> entity = CommandUtil.getEntityFromObject(request, CommandUtil.getRequestHeader(getResponseCache().getAuthToken(scenario), HttpHeaderEnum.CREATE_SUBSCRIPTION));
+        HttpEntity<String> entity = ModelUtil.getEntityFromObject(request, ModelUtil.getRequestHeader(getResponseCache().getAuthToken(scenario), HttpHeaderEnum.CREATE_SUBSCRIPTION));
 
         try {
             logInfoOnStart(accountId);

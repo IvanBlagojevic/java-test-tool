@@ -1,22 +1,25 @@
 package com.avaya.ecloud.network;
 
 import com.avaya.ecloud.aams.AamsConnection;
+import com.avaya.ecloud.model.events.NotificationEvent;
+import com.avaya.ecloud.utils.ModelUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-@Component("webSocketHandler")
+import java.io.IOException;
+
 public class ClientWebSocketHandler extends TextWebSocketHandler {
 
+    private String callUri;
     private AamsConnection connection;
 
-    @Autowired
-    public ClientWebSocketHandler(AamsConnection connection) {
+    public ClientWebSocketHandler(String callUri, AamsConnection connection) {
+        this.callUri = callUri;
         this.connection = connection;
     }
 
@@ -32,21 +35,36 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         LOGGER.info("afterConnectionClosed");
     }
 
-    @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) {
+    private String getDiscoveryMessage(String payload) {
+        String subscribe = ModelUtil.getJsonFromFile("wssSubscribe.json");
+        return StringUtils.replace(subscribe, "${CALLS_URI}", callUri);
+    }
 
-        switch (getEventTypeFromPayload(message.getPayload())) {
+    private String getNotificationMessage(String payload) {
+        NotificationEvent event = ModelUtil.getNotificationEventFromPayload(payload);
+
+        return "";
+    }
+
+    @Override
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+        String payload = message.getPayload();
+        String eventType = getEventTypeFromPayload(payload);
+
+        switch (eventType) {
             case "notification":
-                LOGGER.info("NOTIFICATION");
+//                session.sendMessage(new TextMessage(getNotificationMessage(payload).getBytes()));
+                LOGGER.info("NOTIFICATION_EVENT");
                 break;
             case "discovery":
-                LOGGER.info("DISCOVERY");
+                LOGGER.info("DISCOVERY_EVENT");
+                session.sendMessage(new TextMessage(getDiscoveryMessage(payload).getBytes()));
                 break;
             case "subscribed":
-                LOGGER.info("SUBSCRIBED");
+                LOGGER.info("SUBSCRIBED_EVENT");
                 break;
             case "notified":
-                LOGGER.info("NOTIFIED");
+                LOGGER.info("NOTIFIED_EVENT");
                 break;
         }
     }

@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.cache.ScenarioCache;
-import com.avaya.ecloud.commands.utils.CommandUtil;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
@@ -38,11 +38,11 @@ public class SessionCommand extends BaseCommand implements Command {
         String authToken = getResponseCache().getAuthToken(scenario);
         List<String> confId = getResponseCache().getConferenceIds(scenario);
 
-        CreateSessionRequest sessionRequest = CommandUtil.getCreateSessionRequestFromFile((String) commandData.getConfig().get("config"));
+        CreateSessionRequest sessionRequest = ModelUtil.getCreateSessionRequestFromFile((String) commandData.getConfig().get("config"));
         sessionRequest.getOperation().getJoin().setResourceId(confId.get(0));
 
 
-        HttpEntity<String> entity = CommandUtil.getEntityFromObject(sessionRequest, CommandUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_SESSION));
+        HttpEntity<String> entity = ModelUtil.getEntityFromObject(sessionRequest, ModelUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_SESSION));
         createSessions(entity, scenario, accountId);
     }
 
@@ -52,7 +52,7 @@ public class SessionCommand extends BaseCommand implements Command {
             getCreateSessionUrl(scenario);
 
             SessionResponse response = getRestTemplate().postForObject(getCreateSessionUrl(scenario), entity, SessionResponse.class);
-            SessionToken sessionToken = CommandUtil.getSessionTokenFromResponse(response);
+            SessionToken sessionToken = ModelUtil.getSessionTokenFromResponse(response);
 
             cacheResponseData(scenario, sessionToken);
 

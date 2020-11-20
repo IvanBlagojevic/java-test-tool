@@ -1,0 +1,11 @@
+{
+  "subscribe": {
+    "resources": [
+      {
+        "application": "CSA",
+        "service": "telephony",
+        "resource": "${CALLS_URI}"
+      }
+    ]
+  }
+}

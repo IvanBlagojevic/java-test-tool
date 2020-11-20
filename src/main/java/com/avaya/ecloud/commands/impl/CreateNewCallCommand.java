@@ -3,7 +3,7 @@ package com.avaya.ecloud.commands.impl;
 import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.cache.ScenarioCache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.commands.utils.CommandUtil;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
@@ -16,7 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import static com.avaya.ecloud.commands.utils.CommandUtil.getCallIdFromResponse;
+import static com.avaya.ecloud.utils.ModelUtil.getCallIdFromResponse;
 
 @Component("createNewCallCommand")
 public class CreateNewCallCommand extends BaseCommand implements Command {
@@ -32,15 +32,14 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
     public void execute(CommandData commandData) {
         String scenario = commandData.getParent();
         String url = getResponseCache().getCallsUri(scenario);
-
-        AudioCall request = CommandUtil.getAudioCallRequestFromFile((String) commandData.getConfig().get("config"));
+        AudioCall request = ModelUtil.getAudioCallRequestFromFile((String) commandData.getConfig().get("config"));
         String sessionId = getResponseCache().getSessionIds(scenario).get(0);
         request.setSessionId(sessionId);
 
         String sessionToken = getResponseCache().getSessionToken(scenario);
-        HttpHeaders requestHeader = CommandUtil.getRequestHeader(sessionToken, HttpHeaderEnum.CREATE_NEW_CALL);
+        HttpHeaders requestHeader = ModelUtil.getRequestHeader(sessionToken, HttpHeaderEnum.CREATE_NEW_CALL);
 
-        HttpEntity<String> entity = CommandUtil.getEntityFromObject(request, requestHeader);
+        HttpEntity<String> entity = ModelUtil.getEntityFromObject(request, requestHeader);
 
         try {
             logInfoOnStart(sessionId);

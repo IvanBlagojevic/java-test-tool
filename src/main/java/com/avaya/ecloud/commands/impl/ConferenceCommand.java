@@ -7,7 +7,7 @@ import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
 import com.avaya.ecloud.model.response.ConferenceResponse;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.commands.utils.CommandUtil;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.command.CommandData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class ConferenceCommand extends BaseCommand implements Command {
         int conferenceCounter = getScenarioCache().getConferenceCounter(scenario);
         String accountId = getScenarioCache().getAccountId(scenario);
 
-        CreateConferenceRequest conferenceRequest = CommandUtil.getCreateConferenceRequestFromFile((String) commandData.getConfig().get("config"));
+        CreateConferenceRequest conferenceRequest = ModelUtil.getCreateConferenceRequestFromFile((String) commandData.getConfig().get("config"));
 
         for (int i = 0; i < conferenceCounter; i++) {
             StringBuilder builder = new StringBuilder();
@@ -69,7 +69,7 @@ public class ConferenceCommand extends BaseCommand implements Command {
             String authToken = getResponseCache().getAuthToken(scenario);
             String roomName = conferenceRequest.getRoomName();
 
-            HttpEntity<String> entity = CommandUtil.getEntityFromObject(conferenceRequest, CommandUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_CONFERENCE));
+            HttpEntity<String> entity = ModelUtil.getEntityFromObject(conferenceRequest, ModelUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_CONFERENCE));
             createConferences(entity, roomName, scenario);
         }
     }
