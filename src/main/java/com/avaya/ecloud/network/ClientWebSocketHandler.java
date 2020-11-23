@@ -1,6 +1,7 @@
 package com.avaya.ecloud.network;
 
 import com.avaya.ecloud.aams.AamsConnection;
+import com.avaya.ecloud.model.aams.SessionInfo;
 import com.avaya.ecloud.model.events.NotificationEvent;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -16,11 +17,11 @@ import java.io.IOException;
 public class ClientWebSocketHandler extends TextWebSocketHandler {
 
     private String callUri;
-    private AamsConnection connection;
+    private AamsConnection auraMediaServerConnection;
 
-    public ClientWebSocketHandler(String callUri, AamsConnection connection) {
+    public ClientWebSocketHandler(String callUri, AamsConnection auraMediaServerConnection) {
         this.callUri = callUri;
-        this.connection = connection;
+        this.auraMediaServerConnection = auraMediaServerConnection;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientWebSocketHandler.class);
@@ -40,10 +41,9 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         return StringUtils.replace(subscribe, "${CALLS_URI}", callUri);
     }
 
-    private String getNotificationMessage(String payload) {
+    private String getCallIdFromPayload(String payload) {
         NotificationEvent event = ModelUtil.getNotificationEventFromPayload(payload);
-
-        return "";
+        return event.getNotification().getContents().getCallId();
     }
 
     @Override
@@ -53,8 +53,8 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
 
         switch (eventType) {
             case "notification":
-//                session.sendMessage(new TextMessage(getNotificationMessage(payload).getBytes()));
                 LOGGER.info("NOTIFICATION_EVENT");
+                processNotificationEvent(session, payload);
                 break;
             case "discovery":
                 LOGGER.info("DISCOVERY_EVENT");
@@ -77,5 +77,21 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
     private String getEventTypeFromPayload(String payload) {
         String substring = payload.substring(payload.indexOf("{") + 1, payload.indexOf(":")).trim();
         return substring.substring(1, substring.length() - 1);
+    }
+
+    private void processNotificationEvent(WebSocketSession session, String payload) throws IOException {
+        auraMediaServerConnection.createControlContext();
+        SessionInfo sessionInfo = auraMediaServerConnection.createSession();
+        String mediaResponseMessage = generateMediaResponseMessage(sessionInfo.getSdpOffer(),
+                getCallIdFromPayload(payload));
+
+        session.sendMessage(new TextMessage(mediaResponseMessage));
+    }
+
+    private String generateMediaResponseMessage(String newSdpOffer, String callId) {
+        // TODO We should switch from hardcoded value to dinamically configure
+        return ModelUtil.getJsonFromFile("createMediaResponseWithCustomSdp.json")
+                .replace("${CALL_ID}", callId)
+                .replace("${CALLS_URI}", callUri).replace("${SDP}", newSdpOffer);
     }
 }

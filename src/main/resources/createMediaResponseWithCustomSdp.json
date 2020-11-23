@@ -1,0 +1,19 @@
+{
+  "notify": {
+    "requestId": "2",
+    "notifications": [
+      {
+        "application": "CSA",
+        "service": "telephony",
+        "resource": "${CALLS_URI}",
+        "version": "1",
+        "contents": {
+          "callId": "${CALL_ID}",
+          "messageType": "createMediaResponse",
+          "messageDataType": "application/vnd.avaya.csa.callaction.v1+json",
+          "messageData": "{\"action\":null,\"actionDetails\":{\"targetCallId\":null,\"participants\":null,\"audioChannel\":{\"channelId\":1,\"direction\":\"SEND_RECEIVE\"},\"videoChannels\":[],\"sdp\":\"${SDP}\",\"sdpType\":\"OFFER\",\"conferenceData\":null}}"
+        }
+      }
+    ]
+  }
+}

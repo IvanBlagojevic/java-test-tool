@@ -15,9 +15,4 @@ public interface AamsConnection {
     void injectAudioViaVxml(String sessionId);
 
     void injectAudioViaTts(String sessionId);
-
-
-
-
-
 }

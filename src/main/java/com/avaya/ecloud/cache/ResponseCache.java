@@ -70,7 +70,5 @@ public interface ResponseCache {
     void saveCallId(String scenarioName, String callId);
 
     String getCallId(String scenarioName);
-
-
 }
 

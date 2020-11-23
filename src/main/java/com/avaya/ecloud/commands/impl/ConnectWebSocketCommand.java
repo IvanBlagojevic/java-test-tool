@@ -36,7 +36,9 @@ public class ConnectWebSocketCommand extends BaseCommand implements Command {
         String callUri = getResponseCache().getCallsUri(scenario);
 
         WebSocketConnectionManager webSocketConnectionManager =
-                new WebSocketConnectionManager(new StandardWebSocketClient(), new ClientWebSocketHandler(callUri, connection), webSocketUri);
+                new WebSocketConnectionManager(new StandardWebSocketClient(),
+                        new ClientWebSocketHandler(callUri, connection),
+                        webSocketUri);
 
         webSocketConnectionManager.start();
 
