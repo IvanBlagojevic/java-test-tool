@@ -18,10 +18,15 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
 
     private String callUri;
     private AamsConnection auraMediaServerConnection;
+    private SessionInfo sessionInfo;
 
     public ClientWebSocketHandler(String callUri, AamsConnection auraMediaServerConnection) {
         this.callUri = callUri;
         this.auraMediaServerConnection = auraMediaServerConnection;
+
+        // TODO We should configure AAMS connection only when needed
+        auraMediaServerConnection.createControlContext();
+        sessionInfo = auraMediaServerConnection.createSession();
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientWebSocketHandler.class);
@@ -41,11 +46,6 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         return StringUtils.replace(subscribe, "${CALLS_URI}", callUri);
     }
 
-    private String getCallIdFromPayload(String payload) {
-        NotificationEvent event = ModelUtil.getNotificationEventFromPayload(payload);
-        return event.getNotification().getContents().getCallId();
-    }
-
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
         String payload = message.getPayload();
@@ -54,7 +54,7 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         switch (eventType) {
             case "notification":
                 LOGGER.info("NOTIFICATION_EVENT");
-                processNotificationEvent(session, payload);
+                processNotificationEvents(session, payload);
                 break;
             case "discovery":
                 LOGGER.info("DISCOVERY_EVENT");
@@ -79,13 +79,18 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         return substring.substring(1, substring.length() - 1);
     }
 
-    private void processNotificationEvent(WebSocketSession session, String payload) throws IOException {
-        auraMediaServerConnection.createControlContext();
-        SessionInfo sessionInfo = auraMediaServerConnection.createSession();
-        String mediaResponseMessage = generateMediaResponseMessage(sessionInfo.getSdpOffer(),
-                getCallIdFromPayload(payload));
-
-        session.sendMessage(new TextMessage(mediaResponseMessage));
+    private void processNotificationEvents(WebSocketSession session, String payload) throws IOException {
+        NotificationEvent notificationEvent = getNotificationEventFromPayload(payload);
+        String messageType = notificationEvent.getNotification().getContents().getMessageType();
+        switch (messageType) {
+            case "createMediaRequest":
+                sendMessageForMediaRequest(session, notificationEvent);
+                sendMessageForProcessMedia(session, notificationEvent);
+                break;
+            case "processMediaRequest":
+                sendSpdAnswer();
+                break;
+        }
     }
 
     private String generateMediaResponseMessage(String newSdpOffer, String callId) {
@@ -93,5 +98,31 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         return ModelUtil.getJsonFromFile("createMediaResponseWithCustomSdp.json")
                 .replace("${CALL_ID}", callId)
                 .replace("${CALLS_URI}", callUri).replace("${SDP}", newSdpOffer);
+    }
+
+    private void sendMessageForMediaRequest(WebSocketSession session,
+                                            NotificationEvent notificationEvent) throws IOException {
+        String mediaResponseMessage = generateMediaResponseMessage(
+                sessionInfo.getSdpOffer(),
+                notificationEvent.getNotification().getContents().getCallId());
+
+        session.sendMessage(new TextMessage(mediaResponseMessage));
+    }
+
+    private void sendMessageForProcessMedia(WebSocketSession session,
+                                            NotificationEvent notificationEvent) throws IOException {
+        String processMediaResponse = ModelUtil.getJsonFromFile("processMediaResponse.json")
+                .replace("${CALL_ID}", notificationEvent.getNotification().getContents().getCallId()
+                .replace("${CALLS_URI}", callUri));
+
+        session.sendMessage(new TextMessage(processMediaResponse));
+    }
+
+    private void sendSpdAnswer() {
+        auraMediaServerConnection.updateSession(sessionInfo.getSid(), sessionInfo.getSdpOffer());
+    }
+
+    private NotificationEvent getNotificationEventFromPayload(String payload) {
+        return ModelUtil.getNotificationEventFromPayload(payload);
     }
 }

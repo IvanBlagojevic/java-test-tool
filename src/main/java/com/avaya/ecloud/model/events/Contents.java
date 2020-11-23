@@ -6,6 +6,7 @@ public class Contents {
     private String messageType;
     private String messageDataType;
     private String messageData;
+    private String endCallReason;
 
     public Contents() {
     }
@@ -40,5 +41,13 @@ public class Contents {
 
     public void setMessageData(String messageData) {
         this.messageData = messageData;
+    }
+
+    public String getEndCallReason() {
+        return endCallReason;
+    }
+
+    public void setEndCallReason(String endCallReason) {
+        this.endCallReason = endCallReason;
     }
 }

@@ -1,0 +1,19 @@
+{
+  "notify": {
+    "requestId": "4",
+    "notifications": [
+      {
+        "application": "CSA",
+        "service": "telephony",
+        "resource": "${CALLS_URI}",
+        "version": "1",
+        "contents": {
+          "callId": "${CALL_ID}",
+          "messageType": "processMediaResponse",
+          "messageDataType": null,
+          "messageData": null
+        }
+      }
+    ]
+  }
+}
