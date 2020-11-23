@@ -7,7 +7,7 @@ import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.command.CommandData;
-import com.avaya.ecloud.model.requests.SubscriptionRequest;
+import com.avaya.ecloud.model.requests.subscriptions.SubscriptionRequest;
 import com.avaya.ecloud.model.response.SubscriptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

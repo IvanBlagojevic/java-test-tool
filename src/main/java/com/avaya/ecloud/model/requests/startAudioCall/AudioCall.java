@@ -9,7 +9,6 @@ public class AudioCall {
     private String priority;
     private String privacy;
     private List<Participant> participants;
-    private String conferenceData;
     private Channel audioChannel;
     private List<Channel> videoChannels;
     private String desiredBandwidth;
@@ -63,14 +62,6 @@ public class AudioCall {
 
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
-    }
-
-    public String getConferenceData() {
-        return conferenceData;
-    }
-
-    public void setConferenceData(String conferenceData) {
-        this.conferenceData = conferenceData;
     }
 
     public String getDesiredBandwidth() {

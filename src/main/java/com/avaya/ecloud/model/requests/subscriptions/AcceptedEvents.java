@@ -1,4 +1,4 @@
-package com.avaya.ecloud.model.requests;
+package com.avaya.ecloud.model.requests.subscriptions;
 
 import java.util.List;
 

@@ -1,25 +1,13 @@
 {
-  "callbackURL": "https://www.example.com",
+  "sessionId": "",
   "acceptedEvents": {
     "category": [],
     "events": [
-      "CONFERENCE_STARTED",
-      "CONFERENCE_ENDED",
-      "DIALOG_EVENT",
-      "DIALOG_END",
-      "RECORDING_STARTED",
-      "RECORDING_STOPPED",
-      "RECORDING_PROGRESS",
-      "RECORDING_READY",
-      "RECORDING_FAILED",
-      "RESOURCE_CONNECTED",
-      "RESOURCE_DELETED",
-      "RESOURCE_RESET",
-      "RESOURCE_ERROR",
+      "RESOURCE_NETWORK_STATUS",
       "ACTIVE_SPEAKER_NOTIFY",
+      "CONFERENCE_PARTICIPANTS",
       "TRANSCRIPTION_INTERIM",
-      "TRANSCRIPTION_FINAL",
-      "MPIVR_EVENT"
+      "TRANSCRIPTION_FINAL"
     ],
     "excludedEvents": []
   }

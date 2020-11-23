@@ -3,11 +3,11 @@ package com.avaya.ecloud.utils;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.events.DiscoveryEvent;
 import com.avaya.ecloud.model.events.NotificationEvent;
-import com.avaya.ecloud.model.requests.SubscriptionRequest;
 import com.avaya.ecloud.model.requests.activateService.ActivateService;
 import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
 import com.avaya.ecloud.model.requests.session.CreateSessionRequest;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
+import com.avaya.ecloud.model.requests.subscriptions.SubscriptionRequest;
 import com.avaya.ecloud.model.response.session.SessionResponse;
 import com.avaya.ecloud.model.response.session.SessionToken;
 import com.avaya.ecloud.model.response.startAudioCall.StartAudioCallResponse;
@@ -21,7 +21,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -72,8 +71,7 @@ public class ModelUtil {
 
     public static AudioCall getAudioCallRequestFromFile(String fileName) {
         try {
-            InputStream is = CreateConferenceRequest.class.getClassLoader().getResourceAsStream(fileName);
-            return OBJECT_MAPPER.readValue("{    \"sessionId\":\"dd3b86e7e03b424a2c62683a3d09f12127ef54c3\",    \"subject\":\"demo call\",    \"priority\":null,    \"privacy\":null,    \"participants\":    [{        \"participantId\":null,        \"remoteDisplayName\":\"\",        \"remoteAddress\":\"11111\"    }],    \"conferenceData\":null,    \"audioChannel\":{        \"channelId\":1,        \"state\":\"ENABLE\",        \"direction\":\"SEND_RECEIVE\"    },    \"videoChannels\":[],    \"desiredBandwidth\":null}", AudioCall.class);
+            return OBJECT_MAPPER.readValue(getJsonFromFile(fileName), AudioCall.class);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);

@@ -1,0 +1,26 @@
+{
+  "callbackURL": "https://www.example.com",
+  "acceptedEvents": {
+    "category": [],
+    "events": [
+      "CONFERENCE_STARTED",
+      "CONFERENCE_ENDED",
+      "DIALOG_EVENT",
+      "DIALOG_END",
+      "RECORDING_STARTED",
+      "RECORDING_STOPPED",
+      "RECORDING_PROGRESS",
+      "RECORDING_READY",
+      "RECORDING_FAILED",
+      "RESOURCE_CONNECTED",
+      "RESOURCE_DELETED",
+      "RESOURCE_RESET",
+      "RESOURCE_ERROR",
+      "ACTIVE_SPEAKER_NOTIFY",
+      "TRANSCRIPTION_INTERIM",
+      "TRANSCRIPTION_FINAL",
+      "MPIVR_EVENT"
+    ],
+    "excludedEvents": []
+  }
+}

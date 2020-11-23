@@ -8,7 +8,8 @@ public enum HttpHeaderEnum {
     RESOURCE_DISCOVERY("", "application/vnd.avaya.csa.resources.v1+json "),
     CREATE_SESSION("application/vnd.avaya.mpaas.sessionpreferences+json", "application/vnd.avaya.mpaas.sessioninfo+json"),
     ACTIVATE_SERVICE("application/vnd.avaya.csa.services.v1+json", ""),
-    CREATE_NEW_CALL("application/vnd.avaya.csa.callpreferences.v1+json", "");
+    CREATE_NEW_CALL("application/vnd.avaya.csa.callpreferences.v1+json", ""),
+    EVENT_SUBSCRIPTION("application/vnd.avaya.mpaas.eventsubscription+json", "application/vnd.avaya.csa.error.v1+json");
 
     private final String contentType;
     private final String accept;

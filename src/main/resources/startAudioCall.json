@@ -10,7 +10,6 @@
       "remoteAddress": "11111"
     }
   ],
-  "conferenceData": "",
   "audioChannel": {
     "channelId": 1,
     "state": "ENABLE",

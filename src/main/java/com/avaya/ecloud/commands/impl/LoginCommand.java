@@ -79,7 +79,7 @@ public class LoginCommand extends BaseCommand implements Command {
 
     private void createSubscription(String scenario, String authToken, String accountId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("config", "subscribeEvents.json");
+        map.put("config", "subscribe.json");
         map.put("authToken", authToken);
         map.put("accountId", accountId);
         subscriptionCommand.execute(new CommandData("createSubscription", scenario, map));

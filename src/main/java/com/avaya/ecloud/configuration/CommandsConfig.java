@@ -19,6 +19,7 @@ public class CommandsConfig {
     private Command connectWebSocketCommand;
     private Command activateServiceCommand;
     private Command createNewCallCommand;
+    private Command eventsSubscriptionCommand;
 
     @Autowired
     public CommandsConfig(@Qualifier("loginCommand") Command loginCommand,
@@ -27,7 +28,8 @@ public class CommandsConfig {
                           @Qualifier("resourceCommand") Command resourceCommand,
                           @Qualifier("connectWebSocketCommand") Command connectWebSocketCommand,
                           @Qualifier("activateServiceCommand") Command activateServiceCommand,
-                          @Qualifier("createNewCallCommand") Command createNewCallCommand) {
+                          @Qualifier("createNewCallCommand") Command createNewCallCommand,
+                          @Qualifier("eventSubscriptionCommand") Command eventsSubscriptionCommand) {
         this.loginCommand = loginCommand;
         this.conferenceCommand = conferenceCommand;
         this.sessionCommand = sessionCommand;
@@ -35,6 +37,7 @@ public class CommandsConfig {
         this.connectWebSocketCommand = connectWebSocketCommand;
         this.activateServiceCommand = activateServiceCommand;
         this.createNewCallCommand = createNewCallCommand;
+        this.eventsSubscriptionCommand = eventsSubscriptionCommand;
     }
 
     @Bean
@@ -47,6 +50,7 @@ public class CommandsConfig {
         commandMap.put("connectWebSocket", connectWebSocketCommand);
         commandMap.put("activateCall", activateServiceCommand);
         commandMap.put("startAudioCall", createNewCallCommand);
+        commandMap.put("subscribeToEvents", eventsSubscriptionCommand);
         return commandMap;
     }
 }

@@ -6,5 +6,5 @@
   "numberOfIterations": 50,
   "accountId": "zz145_testing_account_id_266aa",
   "accountSecret": "1ed4c256-bcab-45a2-884e-3c5e16ce0a67",
-  "callbackURL": "https://localhost:8080/subscribeEvent"
+  "callbackURL": "http://localhost:8080/subscribeEvent"
 }
