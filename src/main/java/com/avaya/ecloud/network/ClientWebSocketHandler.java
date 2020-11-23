@@ -53,7 +53,7 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
 
         switch (eventType) {
             case "notification":
-                LOGGER.info("NOTIFICATION_EVENT");
+                LOGGER.info("NOTIFICATION_EVENT: " + payload);
                 processNotificationEvents(session, payload);
                 break;
             case "discovery":
@@ -64,7 +64,7 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
                 LOGGER.info("SUBSCRIBED_EVENT");
                 break;
             case "notified":
-                LOGGER.info("NOTIFIED_EVENT");
+                LOGGER.info("NOTIFIED_EVENT:" + payload);
                 break;
         }
     }
@@ -105,16 +105,14 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         String mediaResponseMessage = generateMediaResponseMessage(
                 sessionInfo.getSdpOffer(),
                 notificationEvent.getNotification().getContents().getCallId());
-
         session.sendMessage(new TextMessage(mediaResponseMessage));
     }
 
     private void sendMessageForProcessMedia(WebSocketSession session,
                                             NotificationEvent notificationEvent) throws IOException {
         String processMediaResponse = ModelUtil.getJsonFromFile("processMediaResponse.json")
-                .replace("${CALL_ID}", notificationEvent.getNotification().getContents().getCallId()
-                .replace("${CALLS_URI}", callUri));
-
+                .replace("${CALL_ID}", notificationEvent.getNotification().getContents().getCallId())
+                .replace("${CALLS_URI}", callUri);
         session.sendMessage(new TextMessage(processMediaResponse));
     }
 
