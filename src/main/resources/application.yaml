@@ -13,6 +13,7 @@ mpaas:
             config: createSession.json
         - name: discoverResources
         - name: connectWebSocket
+        - name: subscribeToEvents
         - name: activateCall
           params:
             config: activateCalls.json

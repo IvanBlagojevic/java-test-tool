@@ -7,7 +7,9 @@ import com.avaya.ecloud.model.requests.activateService.ActivateService;
 import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
 import com.avaya.ecloud.model.requests.session.CreateSessionRequest;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
+import com.avaya.ecloud.model.requests.subscriptions.EventSubscriptionRequest;
 import com.avaya.ecloud.model.requests.subscriptions.SubscriptionRequest;
+import com.avaya.ecloud.model.response.EventSubscriptionResponse;
 import com.avaya.ecloud.model.response.session.SessionResponse;
 import com.avaya.ecloud.model.response.session.SessionToken;
 import com.avaya.ecloud.model.response.startAudioCall.StartAudioCallResponse;
@@ -73,6 +75,16 @@ public class ModelUtil {
     public static AudioCall getAudioCallRequestFromFile(String fileName) {
         try {
             return OBJECT_MAPPER.readValue(getJsonFromFile(fileName), AudioCall.class);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+
+    public static EventSubscriptionRequest getEventSubscriptionRequestFromFile(String fileName) {
+        try {
+            return OBJECT_MAPPER.readValue(getJsonFromFile(fileName), EventSubscriptionRequest.class);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -161,6 +173,16 @@ public class ModelUtil {
         }
 
         return header;
+    }
+
+
+    public static EventSubscriptionResponse getEventSubscriptionResponse(String responseBody) {
+        try {
+            return OBJECT_MAPPER.readValue(responseBody, EventSubscriptionResponse.class);
+        } catch (JsonProcessingException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     public static SessionToken getSessionTokenFromResponse(SessionResponse response) {
