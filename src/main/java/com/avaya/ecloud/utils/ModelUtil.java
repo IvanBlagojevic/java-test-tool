@@ -11,6 +11,7 @@ import com.avaya.ecloud.model.requests.subscriptions.SubscriptionRequest;
 import com.avaya.ecloud.model.response.session.SessionResponse;
 import com.avaya.ecloud.model.response.session.SessionToken;
 import com.avaya.ecloud.model.response.startAudioCall.StartAudioCallResponse;
+import com.avaya.ecloud.model.sdp.SdpAnswer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -72,6 +73,15 @@ public class ModelUtil {
     public static AudioCall getAudioCallRequestFromFile(String fileName) {
         try {
             return OBJECT_MAPPER.readValue(getJsonFromFile(fileName), AudioCall.class);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static SdpAnswer getSdpAnswerFromMessageData(String messageData) {
+        try {
+            return OBJECT_MAPPER.readValue(messageData, SdpAnswer.class);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);

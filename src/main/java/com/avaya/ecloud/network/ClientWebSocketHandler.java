@@ -3,6 +3,7 @@ package com.avaya.ecloud.network;
 import com.avaya.ecloud.aams.AamsConnection;
 import com.avaya.ecloud.model.aams.SessionInfo;
 import com.avaya.ecloud.model.events.NotificationEvent;
+import com.avaya.ecloud.model.sdp.SdpAnswer;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -82,14 +83,19 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
     private void processNotificationEvents(WebSocketSession session, String payload) throws IOException {
         NotificationEvent notificationEvent = getNotificationEventFromPayload(payload);
         String messageType = notificationEvent.getNotification().getContents().getMessageType();
+        LOGGER.info("MESSAGE_TYPE: " + messageType);
         switch (messageType) {
             case "createMediaRequest":
                 sendMessageForMediaRequest(session, notificationEvent);
                 sendMessageForProcessMedia(session, notificationEvent);
                 break;
             case "processMediaRequest":
-                sendSpdAnswer();
+                sendSpdAnswer(payload);
                 break;
+            case "callEstablished":
+                LOGGER.info("NOTIFICATION_CALL_ESTABLISHED");
+                break;
+
         }
     }
 
@@ -102,8 +108,7 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
 
     private void sendMessageForMediaRequest(WebSocketSession session,
                                             NotificationEvent notificationEvent) throws IOException {
-        String mediaResponseMessage = generateMediaResponseMessage(
-                sessionInfo.getSdpOffer(),
+        String mediaResponseMessage = generateMediaResponseMessage(sessionInfo.getSdpOffer(),
                 notificationEvent.getNotification().getContents().getCallId());
         session.sendMessage(new TextMessage(mediaResponseMessage));
     }
@@ -116,8 +121,10 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
         session.sendMessage(new TextMessage(processMediaResponse));
     }
 
-    private void sendSpdAnswer() {
-        auraMediaServerConnection.updateSession(sessionInfo.getSid(), sessionInfo.getSdpOffer());
+    private void sendSpdAnswer(String payload) {
+        NotificationEvent notification = ModelUtil.getNotificationEventFromPayload(payload);
+        SdpAnswer sdpAnswer = ModelUtil.getSdpAnswerFromMessageData(notification.getNotification().getContents().getMessageData());
+        auraMediaServerConnection.updateSession(sessionInfo.getSid(), sdpAnswer.getActionDetails().getSdp());
     }
 
     private NotificationEvent getNotificationEventFromPayload(String payload) {
