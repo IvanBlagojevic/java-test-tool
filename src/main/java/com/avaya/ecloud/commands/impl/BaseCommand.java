@@ -5,7 +5,7 @@ import com.avaya.ecloud.cache.ScenarioCache;
 import org.springframework.web.client.RestTemplate;
 
 
-public class BaseCommand {
+abstract class BaseCommand {
 
     private ScenarioCache scenarioCache;
 

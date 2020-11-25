@@ -7,9 +7,13 @@ public enum HttpHeaderEnum {
     CREATE_SUBSCRIPTION("application/vnd.avaya.mpaas.subscriptionrequest+json", "application/vnd.avaya.mpaas.subscriptioninfo+json"),
     RESOURCE_DISCOVERY("", "application/vnd.avaya.csa.resources.v1+json "),
     CREATE_SESSION("application/vnd.avaya.mpaas.sessionpreferences+json", "application/vnd.avaya.mpaas.sessioninfo+json"),
+    DELETE_SESSION("", ""),
     ACTIVATE_SERVICE("application/vnd.avaya.csa.services.v1+json", ""),
     CREATE_NEW_CALL("application/vnd.avaya.csa.callpreferences.v1+json", ""),
-    EVENT_SUBSCRIPTION("application/vnd.avaya.mpaas.eventsubscription+json", "");
+    EVENT_SUBSCRIPTION("application/vnd.avaya.mpaas.eventsubscription+json", ""),
+    UNSUBSCRIBE_EVENTS("application/json", ""),
+    TERMINATE_CLIENT("", ""),
+    END_CALL("application/vnd.avaya.csa.callaction.v1+json", "");
 
     private final String contentType;
     private final String accept;

@@ -59,5 +59,4 @@ public class Application {
         customRequestFactory.setConnectionRequestTimeout(30000);
         return builder.requestFactory(() -> customRequestFactory).build();
     }
-
 }

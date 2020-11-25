@@ -7,6 +7,7 @@ import com.avaya.ecloud.model.events.DiscoveryEvent;
 import com.avaya.ecloud.model.events.NotificationEvent;
 import com.avaya.ecloud.model.requests.activateService.ActivateService;
 import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
+import com.avaya.ecloud.model.requests.endCall.CallAction;
 import com.avaya.ecloud.model.requests.session.CreateSessionRequest;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
 import com.avaya.ecloud.model.requests.subscriptions.EventSubscriptionRequest;
@@ -143,6 +144,17 @@ public class ModelUtil {
         }
     }
 
+    // TODO We should refactor this to use one method with generic approach
+    // TODO In order to support all different class in our application
+    public static CallAction getCallActionRequestFromFile(String fileName) {
+        try {
+            return OBJECT_MAPPER.readValue(getJsonFromFile(fileName), CallAction.class);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     public static HttpEntity<String> getEntityFromObject(Object request, HttpHeaders header) {
         String body = null;
         if (!Objects.isNull(request)) {
@@ -203,6 +215,4 @@ public class ModelUtil {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
-
-
 }

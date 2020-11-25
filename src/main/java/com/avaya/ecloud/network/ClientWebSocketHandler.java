@@ -18,16 +18,16 @@ import java.io.IOException;
 public class ClientWebSocketHandler extends TextWebSocketHandler {
 
     private String callUri;
-    private AamsConnection auraMediaServerConnection;
+    private AamsConnection auraServerConnection;
     private SessionInfo sessionInfo;
 
-    public ClientWebSocketHandler(String callUri, AamsConnection auraMediaServerConnection) {
+    public ClientWebSocketHandler(String callUri, AamsConnection auraServerConnection) {
         this.callUri = callUri;
-        this.auraMediaServerConnection = auraMediaServerConnection;
+        this.auraServerConnection = auraServerConnection;
 
         // TODO We should configure AAMS connection only when needed
-        auraMediaServerConnection.createControlContext();
-        sessionInfo = auraMediaServerConnection.createSession();
+        auraServerConnection.createControlContext();
+        sessionInfo = auraServerConnection.createSession();
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientWebSocketHandler.class);
@@ -51,7 +51,6 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
         String payload = message.getPayload();
         String eventType = getEventTypeFromPayload(payload);
-
         switch (eventType) {
             case "notification":
                 LOGGER.info("NOTIFICATION_EVENT: " + payload);
@@ -95,7 +94,15 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
             case "callEstablished":
                 LOGGER.info("NOTIFICATION_CALL_ESTABLISHED");
                 break;
+            case "serviceStatusChanged":
+                deleteSession(session, notificationEvent);
+                break;
+            default:
+                break;
+        }
 
+        if (session.isOpen()) {
+            LOGGER.info("Socket is still opened");
         }
     }
 
@@ -124,10 +131,29 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
     private void sendSpdAnswer(String payload) {
         NotificationEvent notification = ModelUtil.getNotificationEventFromPayload(payload);
         SdpAnswer sdpAnswer = ModelUtil.getSdpAnswerFromMessageData(notification.getNotification().getContents().getMessageData());
-        auraMediaServerConnection.updateSession(sessionInfo.getSid(), sdpAnswer.getActionDetails().getSdp());
+        auraServerConnection.updateSession(sessionInfo.getSid(), sdpAnswer.getActionDetails().getSdp());
+    }
+
+    private void deleteSession(WebSocketSession session, NotificationEvent event) {
+        if (isServiceDeactivated(event)) {
+            if (session.isOpen()) {
+                try {
+                    session.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            auraServerConnection.deleteSession(sessionInfo.getSid());
+        }
     }
 
     private NotificationEvent getNotificationEventFromPayload(String payload) {
         return ModelUtil.getNotificationEventFromPayload(payload);
+    }
+
+    private boolean isServiceDeactivated(NotificationEvent notificationEvent) {
+        // TODO We should refactor hardcoded strings
+        return notificationEvent.getNotification().getContents().getStatus().equals("deactivated");
     }
 }
