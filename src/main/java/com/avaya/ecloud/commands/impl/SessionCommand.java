@@ -36,20 +36,22 @@ public class SessionCommand extends BaseCommand implements Command {
         String scenario = commandData.getParent();
         String accountId = getScenarioCache().getAccountId(scenario);
         String authToken = getResponseCache().getAuthToken(scenario);
-        List<String> confId = getResponseCache().getConferenceIds(scenario);
+        List<String> confIds = getResponseCache().getConferenceIds(scenario);
 
         int rampTime = getScenarioCache().getRampTime(scenario);
         int sessionCounter = getScenarioCache().getSessionCounter(scenario);
         int timeRate = rampTime / sessionCounter;
 
         CreateSessionRequest sessionRequest = ModelUtil.getCreateSessionRequestFromFile((String) commandData.getConfig().get("config"));
-        sessionRequest.getOperation().getJoin().setResourceId(confId.get(0));
 
-        HttpEntity<String> entity = ModelUtil.getEntityFromObject(sessionRequest, ModelUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_SESSION));
-
-        for (int i = 0; i < sessionCounter; i++) {
-            createSessions(entity, scenario, accountId);
+        for (String confId : confIds) {
+            sessionRequest.getOperation().getJoin().setResourceId(confId);
+            HttpEntity<String> entity = ModelUtil.getEntityFromObject(sessionRequest, ModelUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_SESSION));
+            for (int i = 0; i < sessionCounter; i++) {
+                createSessions(entity, scenario, accountId);
+            }
         }
+
     }
 
     private void createSessions(HttpEntity<String> entity, String scenario, String accountId) {

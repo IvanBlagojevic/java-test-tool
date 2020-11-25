@@ -8,9 +8,34 @@ mpaas:
         - name: createConference
           params:
             config: createConf.json
+        - name: createSession
+          params:
+            config: createSession.json
         - name: timeWait
           params:
-             time: 2000
+            time: 1000
+        - name: clientConnectSession
+        - name: unsubscribeFromEvents
+        - name: endEstablishedCall
+          params:
+            config: endCall.json
+        - name:  deactivateCall
+          params:
+            config: deactivateCalls.json
+        - name: terminateClient
+        - name: deleteHttpSession
+        - name: deleteSession
+    - name: SECOND_SCENARIO
+      params:
+        config: firstScenario.json
+      tasks:
+        - name: login
+        - name: createConference
+          params:
+            config: createConf.json
+        - name: timeWait
+          params:
+            time: 2000
         - name: createSession
           params:
             config: createSession.json
