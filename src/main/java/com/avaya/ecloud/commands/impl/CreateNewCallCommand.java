@@ -32,7 +32,7 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
     public void execute(CommandData commandData) {
         String scenario = commandData.getParent();
         String url = getResponseCache().getCallsUri(scenario);
-        AudioCall request = ModelUtil.getAudioCallRequestFromFile((String) commandData.getConfig().get("config"));
+        AudioCall request = ModelUtil.getAudioCallRequestFromFile("startAudioCall.json");
         String sessionId = getResponseCache().getSessionIds(scenario).get(0);
         request.setSessionId(sessionId);
 

@@ -2,18 +2,19 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
 import com.avaya.ecloud.model.response.ConferenceResponse;
-import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.utils.ModelUtil;
-import com.avaya.ecloud.model.command.CommandData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -57,20 +58,23 @@ public class ConferenceCommand extends BaseCommand implements Command {
     @Override
     public void execute(CommandData commandData) {
         String scenario = commandData.getParent();
-        int conferenceCounter = getScenarioCache().getConferenceCounter(scenario);
-        String accountId = getScenarioCache().getAccountId(scenario);
 
-        CreateConferenceRequest conferenceRequest = ModelUtil.getCreateConferenceRequestFromFile((String) commandData.getConfig().get("config"));
+        if (CollectionUtils.isEmpty(getResponseCache().getConferenceIds(scenario))) {
+            int conferenceCounter = getScenarioCache().getConferenceCounter(scenario);
+            String accountId = getScenarioCache().getAccountId(scenario);
 
-        for (int i = 0; i < conferenceCounter; i++) {
-            StringBuilder builder = new StringBuilder();
-            conferenceRequest.setRoomName(builder.append("conference-").append(accountId).append("-").append(i).toString());
+            CreateConferenceRequest conferenceRequest = ModelUtil.getCreateConferenceRequestFromFile((String) commandData.getConfig().get("config"));
 
-            String authToken = getResponseCache().getAuthToken(scenario);
-            String roomName = conferenceRequest.getRoomName();
+            for (int i = 0; i < conferenceCounter; i++) {
+                StringBuilder builder = new StringBuilder();
+                conferenceRequest.setRoomName(builder.append("conference-").append(accountId).append("-").append(i).toString());
 
-            HttpEntity<String> entity = ModelUtil.getEntityFromObject(conferenceRequest, ModelUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_CONFERENCE));
-            createConferences(entity, roomName, scenario);
+                String authToken = getResponseCache().getAuthToken(scenario);
+                String roomName = conferenceRequest.getRoomName();
+
+                HttpEntity<String> entity = ModelUtil.getEntityFromObject(conferenceRequest, ModelUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_CONFERENCE));
+                createConferences(entity, roomName, scenario);
+            }
         }
     }
 }

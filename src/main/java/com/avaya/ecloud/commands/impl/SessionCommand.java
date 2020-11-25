@@ -2,14 +2,14 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.ResponseCache;
 import com.avaya.ecloud.cache.ScenarioCache;
-import com.avaya.ecloud.utils.ModelUtil;
+import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.session.CreateSessionRequest;
 import com.avaya.ecloud.model.response.session.SessionResponse;
 import com.avaya.ecloud.model.response.session.SessionToken;
-import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.utils.ModelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +38,18 @@ public class SessionCommand extends BaseCommand implements Command {
         String authToken = getResponseCache().getAuthToken(scenario);
         List<String> confId = getResponseCache().getConferenceIds(scenario);
 
+        int rampTime = getScenarioCache().getRampTime(scenario);
+        int sessionCounter = getScenarioCache().getSessionCounter(scenario);
+        int timeRate = rampTime / sessionCounter;
+
         CreateSessionRequest sessionRequest = ModelUtil.getCreateSessionRequestFromFile((String) commandData.getConfig().get("config"));
         sessionRequest.getOperation().getJoin().setResourceId(confId.get(0));
 
-
         HttpEntity<String> entity = ModelUtil.getEntityFromObject(sessionRequest, ModelUtil.getRequestHeader(authToken, HttpHeaderEnum.CREATE_SESSION));
-        createSessions(entity, scenario, accountId);
+
+        for (int i = 0; i < sessionCounter; i++) {
+            createSessions(entity, scenario, accountId);
+        }
     }
 
     private void createSessions(HttpEntity<String> entity, String scenario, String accountId) {

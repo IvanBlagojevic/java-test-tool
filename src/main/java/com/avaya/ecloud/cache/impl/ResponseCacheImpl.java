@@ -43,7 +43,7 @@ public class ResponseCacheImpl implements ResponseCache {
 
     @Override
     public String getAuthToken(String scenarioName) {
-        return getResponseDetail(scenarioName).getAuthToken();
+        return !Objects.isNull(getResponseDetail(scenarioName)) ? getResponseDetail(scenarioName).getAuthToken() : null;
     }
 
     @Override

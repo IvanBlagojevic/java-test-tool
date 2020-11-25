@@ -34,7 +34,7 @@ public class ActivateServiceCommand extends BaseCommand implements Command {
         //TODO what about basic auth header?
 
         HttpHeaders requestHeader = ModelUtil.getRequestHeader(sessionToken, HttpHeaderEnum.ACTIVATE_SERVICE);
-        ActivateService request = ModelUtil.getActivateServiceRequestFromFile((String) commandData.getConfig().get("config"));
+        ActivateService request = ModelUtil.getActivateServiceRequestFromFile("activateCalls.json");
 
         HttpEntity<String> entity = ModelUtil.getEntityFromObject(request, requestHeader);
 

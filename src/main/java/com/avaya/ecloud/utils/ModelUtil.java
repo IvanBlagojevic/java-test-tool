@@ -1,5 +1,7 @@
 package com.avaya.ecloud.utils;
 
+import com.avaya.ecloud.configuration.ScenariosConfig;
+import com.avaya.ecloud.model.cache.ScenarioDetails;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.events.DiscoveryEvent;
 import com.avaya.ecloud.model.events.NotificationEvent;
@@ -181,6 +183,14 @@ public class ModelUtil {
             return OBJECT_MAPPER.readValue(responseBody, EventSubscriptionResponse.class);
         } catch (JsonProcessingException e) {
             LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static ScenarioDetails getScenarioConfig(ScenariosConfig.Scenario scenario) {
+        try {
+            return OBJECT_MAPPER.readValue(getJsonFromFile((String) scenario.getParams().get("config")), ScenarioDetails.class);
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }

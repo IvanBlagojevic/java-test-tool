@@ -1,12 +1,11 @@
 package com.avaya.ecloud.runner;
 
 import com.avaya.ecloud.cache.ScenarioCache;
-import com.avaya.ecloud.configuration.ScenariosConfig;
-import com.avaya.ecloud.model.requests.conference.CreateConferenceRequest;
-import com.avaya.ecloud.model.cache.ScenarioDetails;
 import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.configuration.ScenariosConfig;
 import com.avaya.ecloud.executor.Executor;
 import com.avaya.ecloud.model.command.CommandData;
+import com.avaya.ecloud.utils.ModelUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +28,7 @@ public class Runner {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private Map<String, Map<Command, CommandData>> clients;
+    private Map<String, Map<CommandData, Command>> clients;
 
     private Executor executor;
 
@@ -59,27 +56,18 @@ public class Runner {
 
         for (ScenariosConfig.Scenario scenario : scenarioList) {
             String scenarioName = scenario.getName();
-            cache.put(scenarioName, getScenarioConfig(scenario));
+            cache.put(scenarioName, ModelUtil.getScenarioConfig(scenario));
 
             List<ScenariosConfig.Task> tasks = scenario.getTasks();
 
-            Map<Command, CommandData> map = new LinkedHashMap<>();
+            Map<CommandData, Command> map = new LinkedHashMap<>();
             for (ScenariosConfig.Task task : tasks) {
-                map.put(commandsMap.get(task.getName()), new CommandData(task.getName(), scenarioName, task.getParams()));
+                String taskName = task.getName();
+                map.put(new CommandData(taskName, scenarioName, task.getParams()), commandsMap.get(taskName));
             }
             clients.putIfAbsent(scenarioName, map);
         }
     }
-
-    private ScenarioDetails getScenarioConfig(ScenariosConfig.Scenario scenario) {
-        try {
-            InputStream is = CreateConferenceRequest.class.getClassLoader().getResourceAsStream((String) scenario.getParams().get("config"));
-            return OBJECT_MAPPER.readValue(is, ScenarioDetails.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
 
     private void shutdownAndAwaitTermination() {
 
@@ -99,17 +87,22 @@ public class Runner {
     @PostConstruct
     public void run() throws Exception {
         setUp();
-        for (Map.Entry<String, Map<Command, CommandData>> entry : clients.entrySet()) {
+        for (Map.Entry<String, Map<CommandData, Command>> entry : clients.entrySet()) {
             String scenario = entry.getKey();
             logInfo(scenario);
-            Map<Command, CommandData> clientsMap = entry.getValue();
-            getExecutor().getExecutorService().execute(() -> executeScenario(clientsMap));
+            Map<CommandData, Command> clientsMap = entry.getValue();
+
+            int scenarioCounter = cache.getNumberOfIterations(scenario);
+            for (int i = 0; i < scenarioCounter; i++) {
+                LOGGER.info("EXECUTING_SCENARIO:" + scenario + "_" + i);
+                getExecutor().getExecutorService().execute(() -> executeScenario(clientsMap));
+            }
         }
     }
 
-    private void executeScenario(Map<Command, CommandData> clientsMap) {
-        for (Map.Entry<Command, CommandData> clientEntry : clientsMap.entrySet()) {
-            clientEntry.getKey().execute(clientEntry.getValue());
+    private void executeScenario(Map<CommandData, Command> clientsMap) {
+        for (Map.Entry<CommandData, Command> clientEntry : clientsMap.entrySet()) {
+            clientEntry.getValue().execute(clientEntry.getKey());
         }
     }
 

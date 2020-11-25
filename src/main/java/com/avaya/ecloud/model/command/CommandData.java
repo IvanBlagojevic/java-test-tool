@@ -1,6 +1,8 @@
 package com.avaya.ecloud.model.command;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CommandData {
 
@@ -15,7 +17,16 @@ public class CommandData {
     public CommandData(String name, String parent, Map<String, Object> config) {
         this.name = name;
         this.parent = parent;
-        this.config = config;
+        setConfig(config);
+    }
+
+    private void setConfig(Map<String, Object> config) {
+        if (!Objects.isNull(config)) {
+            this.config = new HashMap<>();
+            for (Map.Entry<String, Object> entry : config.entrySet()) {
+                this.config.put(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     public String getParent() {

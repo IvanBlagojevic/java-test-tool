@@ -12,14 +12,8 @@ import java.util.Map;
 @Configuration
 public class CommandsConfig {
 
-    private Command loginCommand;
-    private Command conferenceCommand;
-    private Command sessionCommand;
-    private Command resourceCommand;
-    private Command connectWebSocketCommand;
-    private Command activateServiceCommand;
-    private Command createNewCallCommand;
-    private Command eventsSubscriptionCommand;
+    Map<String, Command> commandMap;
+
 
     @Autowired
     public CommandsConfig(@Qualifier("loginCommand") Command loginCommand,
@@ -29,20 +23,33 @@ public class CommandsConfig {
                           @Qualifier("connectWebSocketCommand") Command connectWebSocketCommand,
                           @Qualifier("activateServiceCommand") Command activateServiceCommand,
                           @Qualifier("createNewCallCommand") Command createNewCallCommand,
-                          @Qualifier("eventSubscriptionCommand") Command eventsSubscriptionCommand) {
-        this.loginCommand = loginCommand;
-        this.conferenceCommand = conferenceCommand;
-        this.sessionCommand = sessionCommand;
-        this.resourceCommand = resourceCommand;
-        this.connectWebSocketCommand = connectWebSocketCommand;
-        this.activateServiceCommand = activateServiceCommand;
-        this.createNewCallCommand = createNewCallCommand;
-        this.eventsSubscriptionCommand = eventsSubscriptionCommand;
+                          @Qualifier("eventSubscriptionCommand") Command eventsSubscriptionCommand,
+                          @Qualifier("clientConnectSession") Command clientConnectSession,
+                          @Qualifier("timeWaitCommand") Command timeWaitCommand) {
+        setCommandMap(loginCommand,
+                conferenceCommand,
+                sessionCommand,
+                resourceCommand,
+                connectWebSocketCommand,
+                activateServiceCommand,
+                createNewCallCommand,
+                eventsSubscriptionCommand,
+                clientConnectSession,
+                timeWaitCommand);
+
     }
 
-    @Bean
-    public Map<String, Command> commandsMap() {
-        Map<String, Command> commandMap = new HashMap<>();
+    private void setCommandMap(Command loginCommand,
+                               Command conferenceCommand,
+                               Command sessionCommand,
+                               Command resourceCommand,
+                               Command connectWebSocketCommand,
+                               Command activateServiceCommand,
+                               Command createNewCallCommand,
+                               Command eventsSubscriptionCommand,
+                               Command clientConnectSession,
+                               Command timeWaitCommand) {
+        commandMap = new HashMap<>();
         commandMap.put("createConference", conferenceCommand);
         commandMap.put("login", loginCommand);
         commandMap.put("createSession", sessionCommand);
@@ -51,6 +58,16 @@ public class CommandsConfig {
         commandMap.put("activateCall", activateServiceCommand);
         commandMap.put("startAudioCall", createNewCallCommand);
         commandMap.put("subscribeToEvents", eventsSubscriptionCommand);
-        return commandMap;
+        commandMap.put("clientConnectSession", clientConnectSession);
+        commandMap.put("timeWait", timeWaitCommand);
+    }
+
+    @Bean
+    public Map<String, Command> commandsMap() {
+        return getCommandMap();
+    }
+
+    private Map<String, Command> getCommandMap() {
+        return this.commandMap;
     }
 }

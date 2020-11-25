@@ -15,10 +15,9 @@ public class TimeWaitCommand implements Command {
     @Override
     public void execute(CommandData commandData) {
         Integer time = (Integer) commandData.getConfig().get("time");
-        LOGGER.info("GOING TO SLEEP FOR " + time + " MILLISECONDS");
+        LOGGER.info("GOING_TO_SLEEP_FOR " + time + " MILLISECONDS");
         try {
-
-            Thread.currentThread().sleep(time);
+            Thread.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

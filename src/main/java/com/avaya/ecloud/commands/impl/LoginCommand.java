@@ -10,6 +10,7 @@ import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.utils.ModelUtil;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.requests.LoginRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,20 +61,23 @@ public class LoginCommand extends BaseCommand implements Command {
     public void execute(CommandData commandData) {
 
         String scenario = commandData.getParent();
-        String accountId = getAccountId(commandData);
-        String accountSecret = getAccountSecret(commandData);
+        String authToken = getResponseCache().getAuthToken(scenario);
+        if (StringUtils.isEmpty(authToken)) {
+            String accountId = getAccountId(commandData);
+            String accountSecret = getAccountSecret(commandData);
 
-        LoginRequest loginRequest = new LoginRequest(accountId, accountSecret);
+            LoginRequest loginRequest = new LoginRequest(accountId, accountSecret);
 
-        HttpEntity<String> entity = ModelUtil.getEntityFromObject(loginRequest, ModelUtil.getRequestHeader(null, HttpHeaderEnum.LOGIN));
+            HttpEntity<String> entity = ModelUtil.getEntityFromObject(loginRequest, ModelUtil.getRequestHeader(null, HttpHeaderEnum.LOGIN));
 
-        try {
-            LoginResponse response = getRestTemplate().postForObject(getLoginUrl(scenario), entity, LoginResponse.class);
-            getResponseCache().put(scenario, new ResponseDetails(accountId, accountSecret, response.getAccessToken()));
-            logInfo(commandData.getName(), loginRequest.getAccountId(), response.getAccessToken());
-            createSubscription(scenario, response.getAccessToken(), accountId);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            try {
+                LoginResponse response = getRestTemplate().postForObject(getLoginUrl(scenario), entity, LoginResponse.class);
+                getResponseCache().put(scenario, new ResponseDetails(accountId, accountSecret, response.getAccessToken()));
+                logInfo(commandData.getName(), loginRequest.getAccountId(), response.getAccessToken());
+                createSubscription(scenario, response.getAccessToken(), accountId);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 
