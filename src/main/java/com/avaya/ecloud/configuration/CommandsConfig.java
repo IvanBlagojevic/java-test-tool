@@ -14,7 +14,6 @@ public class CommandsConfig {
 
     Map<String, Command> commandMap;
 
-
     @Autowired
     public CommandsConfig(@Qualifier("loginCommand") Command loginCommand,
                           @Qualifier("conferenceCommand") Command conferenceCommand,
@@ -25,7 +24,12 @@ public class CommandsConfig {
                           @Qualifier("createNewCallCommand") Command createNewCallCommand,
                           @Qualifier("eventSubscriptionCommand") Command eventsSubscriptionCommand,
                           @Qualifier("clientConnectSession") Command clientConnectSession,
-                          @Qualifier("timeWaitCommand") Command timeWaitCommand) {
+                          @Qualifier("timeWaitCommand") Command timeWaitCommand,
+                          @Qualifier("eventsUnsubscribeCommand") Command eventsUnsubscribeCommand,
+                          @Qualifier("endEstablishedCallCommand") Command endEstablishedCallCommand,
+                          @Qualifier("deactivateServiceCommand") Command deactivateServiceCommand,
+                          @Qualifier("terminateClientCommand") Command terminateClientCommand,
+                          @Qualifier("deleteSessionCommand") Command deleteHttpSessionCommand) {
         setCommandMap(loginCommand,
                 conferenceCommand,
                 sessionCommand,
@@ -35,7 +39,12 @@ public class CommandsConfig {
                 createNewCallCommand,
                 eventsSubscriptionCommand,
                 clientConnectSession,
-                timeWaitCommand);
+                timeWaitCommand,
+                eventsUnsubscribeCommand,
+                endEstablishedCallCommand,
+                deactivateServiceCommand,
+                terminateClientCommand,
+                deleteHttpSessionCommand);
 
     }
 
@@ -48,7 +57,12 @@ public class CommandsConfig {
                                Command createNewCallCommand,
                                Command eventsSubscriptionCommand,
                                Command clientConnectSession,
-                               Command timeWaitCommand) {
+                               Command timeWaitCommand,
+                               Command eventsUnsubscribeCommand,
+                               Command endEstablishedCallCommand,
+                               Command deactivateServiceCommand,
+                               Command terminateClientCommand,
+                               Command deleteHttpSessionCommand) {
         commandMap = new HashMap<>();
         commandMap.put("createConference", conferenceCommand);
         commandMap.put("login", loginCommand);
@@ -60,6 +74,11 @@ public class CommandsConfig {
         commandMap.put("subscribeToEvents", eventsSubscriptionCommand);
         commandMap.put("clientConnectSession", clientConnectSession);
         commandMap.put("timeWait", timeWaitCommand);
+        commandMap.put("unsubscribeFromEvents", eventsUnsubscribeCommand);
+        commandMap.put("endEstablishedCall", endEstablishedCallCommand);
+        commandMap.put("deactivateCall", deactivateServiceCommand);
+        commandMap.put("terminateClient", terminateClientCommand);
+        commandMap.put("deleteHttpSession", deleteHttpSessionCommand);
     }
 
     @Bean
