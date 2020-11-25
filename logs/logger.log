@@ -1,2 +1,0 @@
-2020-11-24 11:37:53,541 INFO o.s.b.StartupInfoLogger [main] Starting Application on RSM1876 with PID 18036 (C:\Users\iblagoj\Documents\Mpaas\Project\java-test-tool\target\classes started by iblagoj in C:\Users\iblagoj\Documents\Mpaas\Project\java-test-tool)
-2020-11-24 11:37:53,548 INFO o.s.b.SpringApplication [main] No active profile set, falling back to default profiles: default
