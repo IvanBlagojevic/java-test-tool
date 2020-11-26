@@ -100,10 +100,6 @@ public class ClientWebSocketHandler extends TextWebSocketHandler {
             default:
                 break;
         }
-
-        if (session.isOpen()) {
-            LOGGER.info("Socket is still opened");
-        }
     }
 
     private String generateMediaResponseMessage(String newSdpOffer, String callId) {
