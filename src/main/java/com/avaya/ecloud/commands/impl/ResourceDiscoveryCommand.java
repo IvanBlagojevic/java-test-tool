@@ -1,20 +1,19 @@
 package com.avaya.ecloud.commands.impl;
 
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
-import com.avaya.ecloud.utils.ModelUtil;
+import com.avaya.ecloud.cache.Cache;
+import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.response.resource.Resource;
 import com.avaya.ecloud.model.response.resource.ResourceDiscoveryResponse;
-import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.command.CommandData;
+import com.avaya.ecloud.utils.ModelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,30 +25,49 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceDiscoveryCommand.class);
 
     @Autowired
-    public ResourceDiscoveryCommand(ScenarioCache scenarioCache, ResponseCache responseCache, @Qualifier("restTemplate") RestTemplate restTemplate) {
-        super(scenarioCache, responseCache, restTemplate);
+    public ResourceDiscoveryCommand(Cache cache, @Qualifier("restTemplate") RestTemplate restTemplate) {
+        super(cache, restTemplate);
     }
+
 
     @Override
     public void execute(CommandData commandData) {
-        String scenario = commandData.getParent();
-        HttpEntity<String> entity = ModelUtil.getEntityFromObject(null, ModelUtil.getRequestHeader(getResponseCache().getSessionToken(scenario), HttpHeaderEnum.RESOURCE_DISCOVERY));
+        HttpHeaders requestHeader = ModelUtil.getRequestHeader(commandData.getResponseData().getSessionToken(), HttpHeaderEnum.RESOURCE_DISCOVERY);
+        HttpEntity<String> entity = ModelUtil.getEntityFromObject(null, requestHeader);
+        String userAgentURL = commandData.getResponseData().getUserAgentURL();
         try {
-            logInfoOnStart();
-            ResponseEntity<ResourceDiscoveryResponse> responseEntity = getRestTemplate().exchange(getResponseCache().getUserAgentURL(scenario), HttpMethod.GET, entity, ResourceDiscoveryResponse.class);
-            cacheResponseData(scenario, responseEntity.getBody());
-            logInfoOnFinish();
+            logInfoOnStart(commandData.getResponseData().getSessionId());
+            ResourceDiscoveryResponse response = getRestTemplate().exchange(userAgentURL, HttpMethod.GET, entity, ResourceDiscoveryResponse.class).getBody();
+            logInfoOnFinish(commandData.getResponseData().getSessionId());
+            executeNext(getUpdatedCommandData(response, commandData));
         } catch (Exception e) {
             logError(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
-    private void cacheResponseData(String scenario, ResourceDiscoveryResponse response) {
-        ResponseCache responseCache = getResponseCache();
-        responseCache.saveWebsocketUri(scenario, response.getNotificationService().getWebsocket().getHref());
-        responseCache.saveSseUri(scenario, response.getNotificationService().getSse().getHref());
-        responseCache.saveTerminateClientUri(scenario, response.getClientManagement().getTerminateClient().getHref());
-        responseCache.saveDeleteSessionUri(scenario, response.getSessionManagement().getHref());
+
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
+    }
+
+    @Override
+    public void setNext(Command command) {
+        super.setNextCommand(command);
+    }
+
+
+    private CommandData getUpdatedCommandData(ResourceDiscoveryResponse response, CommandData commandData) {
+        CommandData nextCommandData = getNextCommandData();
+
+        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        data.setResponseData(commandData.getResponseData());
+
+        data.getResponseData().setWebSocketUri(response.getNotificationService().getWebsocket().getHref());
+        data.getResponseData().setSseUri(response.getNotificationService().getSse().getHref());
+        data.getResponseData().setTerminateClientUri(response.getClientManagement().getTerminateClient().getHref());
+        data.getResponseData().setDeleteSessionUri(response.getSessionManagement().getHref());
 
         List<Resource> resources = response.getResources();
 
@@ -59,29 +77,29 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
 
             switch (name) {
                 case "calls":
-                    responseCache.saveCallsUri(scenario, href);
+                    data.getResponseData().setCallsUri(href);
                     break;
                 case "mpaasevents":
-                    responseCache.saveEventsUri(scenario, href);
+                    data.getResponseData().setEventsUri(href);
                     break;
                 case "services":
-                    responseCache.saveServicesUri(scenario, href);
+                    data.getResponseData().setServicesUri(href);
                     break;
             }
         }
+        return data;
     }
 
-    private void logInfoOnStart() {
-        LOGGER.info("Resource discovery STARTED");
+    private void logInfoOnStart(String sessionId) {
+        LOGGER.info("Resource discovery STARTED for session id " + sessionId);
     }
 
-    private void logInfoOnFinish() {
-        LOGGER.info("Resource discovery FINISHED");
+    private void logInfoOnFinish(String sessionId) {
+        LOGGER.info("Resource discovery FINISHED for session id " + sessionId);
     }
 
     private void logError(Exception e) {
         LOGGER.error("Resource discovery ERROR. ERROR MESSAGE: " + e.getMessage(), e);
     }
-
 
 }

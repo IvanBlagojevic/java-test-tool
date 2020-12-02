@@ -1,8 +1,8 @@
 package com.avaya.ecloud.commands.impl;
 
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.model.response.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.subscriptions.EventSubscriptionRequest;
@@ -24,18 +24,18 @@ public class EventSubscriptionCommand extends BaseCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventSubscriptionCommand.class);
 
     @Autowired
-    public EventSubscriptionCommand(ScenarioCache scenarioCache, ResponseCache responseCache, RestTemplate restTemplate) {
-        super(scenarioCache, responseCache, restTemplate);
+    public EventSubscriptionCommand(Cache cache, RestTemplate restTemplate) {
+        super(cache, restTemplate);
     }
 
     @Override
     public void execute(CommandData commandData) {
-        String scenario = commandData.getParent();
-        String sessionId = getResponseCache().getSessionIds(scenario).get(0);
+        ResponseData responseData = commandData.getResponseData();
+        String sessionId = responseData.getSessionId();
 
-        HttpHeaders headers = ModelUtil.getRequestHeader(getResponseCache().getSessionToken(scenario), HttpHeaderEnum.EVENT_SUBSCRIPTION);
+        HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.EVENT_SUBSCRIPTION);
 
-        String url = getResponseCache().getEventsUri(scenario);
+        String url = responseData.getEventsUri();
         EventSubscriptionRequest request = ModelUtil.getEventSubscriptionRequestFromFile("subscribeEvents.json");
         request.setSessionId(sessionId);
 
@@ -45,9 +45,30 @@ public class EventSubscriptionCommand extends BaseCommand implements Command {
             logInfoOnStart(sessionId);
             ResponseEntity<String> response = getRestTemplate().postForEntity(url, entity, String.class);
             logInfoOnFinish(sessionId, ModelUtil.getEventSubscriptionResponse(response.getBody()).getSubscribedEvents().getEvents());
+            executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {
             logError(sessionId, e);
+            throw new RuntimeException(e.getMessage());
         }
+
+    }
+
+
+    private CommandData updateNextCommandData(ResponseData responseData) {
+        CommandData nextCommandData = getNextCommandData();
+        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        data.setResponseData(responseData);
+        return data;
+    }
+
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
+    }
+
+    @Override
+    public void setNext(Command command) {
+        super.setNextCommand(command);
     }
 
     private void logInfoOnStart(String sessionId) {

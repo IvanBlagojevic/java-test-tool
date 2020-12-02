@@ -1,5 +1,9 @@
 package com.avaya.ecloud.model.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class ScenarioDetails {
     private String baseUrl;
     private int conferencesCounter;
@@ -9,8 +13,39 @@ public class ScenarioDetails {
     private String callbackURL;
     private String accountId;
     private String accountSecret;
+    private String authToken;
+    private List<String> conferenceIds;
+    private String subscriptionId;
 
     public ScenarioDetails() {
+    }
+
+    public List<String> getConferenceIds() {
+        if (Objects.isNull(conferenceIds)) {
+            conferenceIds = new ArrayList<>();
+        }
+        return conferenceIds;
+    }
+
+
+    public String getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(String subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public void setConferenceIds(List<String> conferenceIds) {
+        this.conferenceIds = conferenceIds;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     public String getBaseUrl() {

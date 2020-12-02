@@ -1,8 +1,7 @@
 package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.aams.AamsConnection;
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.network.ClientWebSocketHandler;
@@ -21,31 +20,47 @@ public class ConnectWebSocketCommand extends BaseCommand implements Command {
     private AamsConnection connection;
 
     @Autowired
-    public ConnectWebSocketCommand(ScenarioCache scenarioCache,
-                                   ResponseCache responseCache,
+    public ConnectWebSocketCommand(Cache cache,
                                    @Qualifier("restTemplate") RestTemplate restTemplate,
                                    AamsConnection connection) {
-        super(scenarioCache, responseCache, restTemplate);
+        super(cache, restTemplate);
         this.connection = connection;
     }
 
     @Override
     public void execute(CommandData commandData) {
-        String scenario = commandData.getParent();
-        String webSocketUri = getResponseCache().getWebsocketUri(scenario);
-        String callUri = getResponseCache().getCallsUri(scenario);
-
-        WebSocketConnectionManager webSocketConnectionManager =
-                new WebSocketConnectionManager(new StandardWebSocketClient(),
-                        new ClientWebSocketHandler(callUri, connection),
-                        webSocketUri);
-
-        webSocketConnectionManager.start();
-
-        logInfoOnFinish();
+        String webSocketUri = commandData.getResponseData().getWebSocketUri();
+        String callUri = commandData.getResponseData().getCallsUri();
+        String sessionId = commandData.getResponseData().getSessionId();
+        getWebSocketConnectionManager(connection, callUri, webSocketUri).start();
+        logInfoOnFinish(sessionId);
+        executeNext(updateNextCommandData(commandData));
     }
 
-    private void logInfoOnFinish() {
-        LOGGER.info("Connect web socket FINISHED");
+    private WebSocketConnectionManager getWebSocketConnectionManager(AamsConnection connection, String callUri, String webSocketUri) {
+        return new WebSocketConnectionManager(new StandardWebSocketClient(),
+                new ClientWebSocketHandler(callUri, connection),
+                webSocketUri);
+    }
+
+    private CommandData updateNextCommandData(CommandData commandData) {
+        CommandData nextCommandData = getNextCommandData();
+        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        data.setResponseData(commandData.getResponseData());
+        return data;
+    }
+
+    @Override
+    public void setNext(Command command) {
+        super.setNextCommand(command);
+    }
+
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
+    }
+
+    private void logInfoOnFinish(String sessionId) {
+        LOGGER.info("Connect web socket FINISHED for session id " + sessionId);
     }
 }

@@ -1,10 +1,10 @@
 {
   "baseUrl": "https://lab6.mpaaservice.com:443/",
-  "conferencesCounter": 2,
-  "sessionCounter": 50,
-  "rampTime": 2,
+  "conferencesCounter": 1,
   "numberOfIterations": 1,
-  "accountId": "zz145_testing_account_id_266aa",
-  "accountSecret": "1ed4c256-bcab-45a2-884e-3c5e16ce0a67",
-  "callbackURL": "http://localhost:8080/subscribeEvent"
+  "sessionCounter": 3,
+  "rampTime": 50,
+  "accountId": "89c5dd01960ed05fb347eb1bd0c3c1cc15c54aa6",
+  "accountSecret": "42dfd014-8521-404d-817c-2308348fc5fb",
+  "callbackURL": "/acceptEvent"
 }

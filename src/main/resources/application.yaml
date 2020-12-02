@@ -1,5 +1,8 @@
+server:
+  port: 8088
+
 mpaas:
-  scenarios:
+   scenarios:
     - name: FIRST_SCENARIO
       params:
         config: firstScenario.json
@@ -11,10 +14,14 @@ mpaas:
         - name: createSession
           params:
             config: createSession.json
+        - name: discoverResources
+        - name: connectWebSocket
+        - name: subscribeToEvents
+        - name: activateCall
+        - name: startAudioCall
         - name: timeWait
           params:
-            time: 1000
-        - name: clientConnectSession
+            time: 10000
         - name: unsubscribeFromEvents
         - name: endEstablishedCall
           params:
@@ -25,31 +32,28 @@ mpaas:
         - name: terminateClient
         - name: deleteHttpSession
         - name: deleteSession
-    - name: SECOND_SCENARIO
-      params:
-        config: firstScenario.json
-      tasks:
-        - name: login
-        - name: createConference
-          params:
-            config: createConf.json
-        - name: timeWait
-          params:
-            time: 2000
-        - name: createSession
-          params:
-            config: createSession.json
-        - name: timeWait
-          params:
-            time: 1000
-        - name: clientConnectSession
-        - name: unsubscribeFromEvents
-        - name: endEstablishedCall
-          params:
-            config: endCall.json
-        - name:  deactivateCall
-          params:
-            config: deactivateCalls.json
-        - name: terminateClient
-        - name: deleteHttpSession
-        - name: deleteSession
+#    - name: SECOND_SCENARIO
+#      params:
+#        config: firstScenario.json
+#      tasks:
+#        - name: login
+#        - name: createConference
+#          params:
+#            config: createConf.json
+#        - name: createSession
+#          params:
+#            config: createSession.json
+#        - name: timeWait
+#          params:
+#            time: 1000
+#        - name: clientConnectSession
+#        - name: unsubscribeFromEvents
+#        - name: endEstablishedCall
+#          params:
+#            config: endCall.json
+#        - name:  deactivateCall
+#          params:
+#            config: deactivateCalls.json
+#        - name: terminateClient
+#        - name: deleteHttpSession
+#        - name: deleteSession

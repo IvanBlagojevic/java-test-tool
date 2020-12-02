@@ -15,20 +15,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component("eventsUnsubscribeCommand")
+public class UnsubscribeEventsCommand extends BaseCommand implements Command {
 
-@Component("terminateClientCommand")
-public class TerminateClientCommand extends BaseCommand implements Command {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminateClientCommand.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnsubscribeEventsCommand.class);
 
     @Autowired
-    public TerminateClientCommand(Cache cache, RestTemplate restTemplate) {
+    public UnsubscribeEventsCommand(Cache cache, RestTemplate restTemplate) {
         super(cache, restTemplate);
-    }
-
-    @Override
-    public void setNextData(CommandData data) {
-        setNextCommandData(data);
     }
 
     @Override
@@ -38,18 +32,25 @@ public class TerminateClientCommand extends BaseCommand implements Command {
 
     @Override
     public void execute(CommandData commandData) {
+        String scenario = commandData.getParent();
         ResponseData responseData = commandData.getResponseData();
-        String terminateClientUri = responseData.getTerminateClientUri();
-        HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.TERMINATE_CLIENT);
+        String sessionId = responseData.getSessionId();
+
+        String url = responseData.getEventsUri();
+
+        HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.UNSUBSCRIBE_EVENTS);
         HttpEntity<?> request = new HttpEntity<>(headers);
 
+        StringBuilder builder = new StringBuilder(url);
+        builder.append("?sessionId=");
+        builder.append(sessionId);
+
         try {
-            getRestTemplate().exchange(terminateClientUri, HttpMethod.DELETE, request, String.class);
-            logInfoOnFinish(terminateClientUri);
+            getRestTemplate().exchange(builder.toString(), HttpMethod.DELETE, request, String.class);
+            logInfoOnFinish(sessionId);
             executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {
-            logError(terminateClientUri, e);
-            //throw new RuntimeException(e.getMessage());
+            logError(sessionId, e);
         }
 
 
@@ -62,15 +63,16 @@ public class TerminateClientCommand extends BaseCommand implements Command {
         return data;
     }
 
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
+    }
 
-    private void logInfoOnFinish(String terminateClientUri) {
-        LOGGER.info("Terminate client FINISHED for client uri " + terminateClientUri);
+    private void logInfoOnFinish(String sessionId) {
+        LOGGER.info("Event unsubscribe FINISHED for session id " + sessionId);
     }
 
     private void logError(String sessionId, Exception e) {
 
     }
-
-
 }
-

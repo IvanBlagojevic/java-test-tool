@@ -1,7 +1,6 @@
 package com.avaya.ecloud.commands.impl;
 
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.command.CommandData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +17,44 @@ public class ClientConnectSessionCommand extends BaseCommand implements Command 
     private List<Command> commands;
 
     @Autowired
-    public ClientConnectSessionCommand(ScenarioCache scenarioCache,
-                                       ResponseCache responseCache,
+    public ClientConnectSessionCommand(Cache cache,
                                        RestTemplate restTemplate,
                                        @Qualifier("resourceCommand") Command discoverResource,
                                        @Qualifier("connectWebSocketCommand") Command connectWebSocket,
                                        @Qualifier("eventSubscriptionCommand") Command eventSubscription,
                                        @Qualifier("activateServiceCommand") Command activateCall,
                                        @Qualifier("createNewCallCommand") Command startAudioCall) {
-        super(scenarioCache, responseCache, restTemplate);
+        super(cache, restTemplate);
         setCommands(discoverResource, connectWebSocket, eventSubscription, activateCall, startAudioCall);
     }
 
     @Override
     public void execute(CommandData commandData) {
         getCommands().forEach(command -> command.execute(commandData));
+        executeNext(getUpdatedCommandData(commandData));
+    }
+
+    private CommandData getUpdatedCommandData(CommandData commandData) {
+        CommandData nextCommandData = getNextCommandData();
+        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        data.setResponseData(commandData.getResponseData());
+        return data;
     }
 
 
     private List<Command> getCommands() {
         return this.commands;
+    }
+
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
+    }
+
+
+    @Override
+    public void setNext(Command command) {
+        super.setNextCommand(command);
     }
 
     private void setCommands(Command discoverResource, Command connectWebSocket, Command eventSubscription, Command activateCall, Command startAudioCall) {

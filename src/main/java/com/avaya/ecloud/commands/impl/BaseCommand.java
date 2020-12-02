@@ -1,33 +1,64 @@
 package com.avaya.ecloud.commands.impl;
 
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
+import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.model.command.CommandData;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 
 abstract class BaseCommand {
 
-    private ScenarioCache scenarioCache;
-
-    private ResponseCache responseCache;
+    private Cache cache;
 
     private RestTemplate restTemplate;
 
-    public ScenarioCache getScenarioCache() {
-        return scenarioCache;
+    private Command nextCommand;
+
+    private CommandData nextCommandData;
+
+    public Cache getCache() {
+        return cache;
     }
 
     public RestTemplate getRestTemplate() {
         return restTemplate;
     }
 
-    public ResponseCache getResponseCache() {
-        return responseCache;
+    public void executeNext(CommandData commandData) {
+        if (!Objects.isNull(getNextCommand())) {
+            getNextCommand().execute(commandData);
+        }
     }
 
-    public BaseCommand(ScenarioCache scenarioCache, ResponseCache responseCache, RestTemplate restTemplate) {
-        this.scenarioCache = scenarioCache;
-        this.responseCache = responseCache;
+    public void updateNextCommandData(String key, Object value) {
+        if (!Objects.isNull(nextCommandData)) {
+            nextCommandData.getConfig().put(key, value);
+        }
+    }
+
+    public Command getNextCommand() {
+        return nextCommand;
+    }
+
+    public CommandData getNextCommandData() {
+        if (Objects.isNull(nextCommandData)) {
+            nextCommandData = new CommandData();
+        }
+        return nextCommandData;
+    }
+
+    public void setNextCommandData(CommandData nextCommandData) {
+        this.nextCommandData = nextCommandData;
+    }
+
+    public void setNextCommand(Command nextCommand) {
+        this.nextCommand = nextCommand;
+    }
+
+    public BaseCommand(Cache cache, RestTemplate restTemplate) {
+        this.cache = cache;
         this.restTemplate = restTemplate;
     }
 }

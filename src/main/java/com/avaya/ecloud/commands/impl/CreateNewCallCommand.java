@@ -1,18 +1,20 @@
 package com.avaya.ecloud.commands.impl;
 
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.utils.ModelUtil;
+import com.avaya.ecloud.model.response.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
+import com.avaya.ecloud.utils.ModelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,32 +26,52 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateNewCallCommand.class);
 
     @Autowired
-    public CreateNewCallCommand(ScenarioCache scenarioCache, ResponseCache responseCache, @Qualifier("restTemplate") RestTemplate restTemplate) {
-        super(scenarioCache, responseCache, restTemplate);
+    public CreateNewCallCommand(Cache cache, @Qualifier("restTemplate") RestTemplate restTemplate) {
+        super(cache, restTemplate);
     }
 
     @Override
     public void execute(CommandData commandData) {
-        String scenario = commandData.getParent();
-        String url = getResponseCache().getCallsUri(scenario);
+        ResponseData responseData = commandData.getResponseData();
+        String sessionId = responseData.getSessionId();
+
+        String url = responseData.getCallsUri();
         AudioCall request = ModelUtil.getAudioCallRequestFromFile("startAudioCall.json");
-        String sessionId = getResponseCache().getSessionIds(scenario).get(0);
         request.setSessionId(sessionId);
 
-        String sessionToken = getResponseCache().getSessionToken(scenario);
+        String sessionToken = responseData.getSessionToken();
         HttpHeaders requestHeader = ModelUtil.getRequestHeader(sessionToken, HttpHeaderEnum.CREATE_NEW_CALL);
 
         HttpEntity<String> entity = ModelUtil.getEntityFromObject(request, requestHeader);
 
         try {
             logInfoOnStart(sessionId);
-            String response = getRestTemplate().postForObject(url, entity, String.class);
-            String callId = getCallIdFromResponse(response);
-            getResponseCache().saveCallId(scenario, callId);
+            ResponseEntity<String> response = getRestTemplate().exchange(url, HttpMethod.POST, entity, String.class);
+            String callId = getCallIdFromResponse(response.getBody());
+            responseData.setCallId(callId);
             logInfoOnFinish(sessionId, callId);
+            executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {
             logError(sessionId, e);
+            throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private CommandData updateNextCommandData(ResponseData responseData) {
+        CommandData nextCommandData = getNextCommandData();
+        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        data.setResponseData(responseData);
+        return data;
+    }
+
+    @Override
+    public void setNext(Command command) {
+        super.setNextCommand(command);
+    }
+
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
     }
 
     private void logInfoOnStart(String sessionId) {

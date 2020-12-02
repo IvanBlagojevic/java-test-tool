@@ -1,14 +1,15 @@
 package com.avaya.ecloud.commands.impl;
 
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.model.response.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.activateService.ActivateService;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -16,19 +17,30 @@ import org.springframework.web.client.RestTemplate;
 
 
 @Component("deactivateServiceCommand")
-public class DeactiveServiceCommand extends BaseCommand implements Command {
+public class DeactivateServiceCommand extends BaseCommand implements Command {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeactiveServiceCommand.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeactivateServiceCommand.class);
 
-    public DeactiveServiceCommand(ScenarioCache scenarioCache, ResponseCache responseCache, RestTemplate restTemplate) {
-        super(scenarioCache, responseCache, restTemplate);
+    @Autowired
+    public DeactivateServiceCommand(Cache cache, RestTemplate restTemplate) {
+        super(cache, restTemplate);
+    }
+
+    @Override
+    public void setNext(Command command) {
+        super.setNextCommand(command);
+    }
+
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
     }
 
     @Override
     public void execute(CommandData commandData) {
-        String scenario = commandData.getParent();
-        String url = getResponseCache().getServicesUri(scenario);
-        String sessionToken = getResponseCache().getSessionToken(scenario);
+        ResponseData responseData = commandData.getResponseData();
+        String url = responseData.getServicesUri();
+        String sessionToken = responseData.getSessionToken();
 
         // TODO We should refactor (merge) ActiveServiceCommand and DeactiveServiceCommand
         // TODO Since these are using same logic, but action is just different. We will need
@@ -41,8 +53,18 @@ public class DeactiveServiceCommand extends BaseCommand implements Command {
 
         try {
             getRestTemplate().postForEntity(url, entity, String.class);
+            executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
         }
+    }
+
+
+    private CommandData updateNextCommandData(ResponseData responseData) {
+        CommandData nextCommandData = getNextCommandData();
+        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        data.setResponseData(responseData);
+        return data;
     }
 }

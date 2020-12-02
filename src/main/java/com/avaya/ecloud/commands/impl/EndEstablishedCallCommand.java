@@ -1,14 +1,15 @@
 package com.avaya.ecloud.commands.impl;
 
-import com.avaya.ecloud.cache.ResponseCache;
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
+import com.avaya.ecloud.model.response.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.endCall.CallAction;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -20,18 +21,30 @@ public class EndEstablishedCallCommand extends BaseCommand implements Command {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EndEstablishedCallCommand.class);
 
-    public EndEstablishedCallCommand(ScenarioCache scenarioCache, ResponseCache responseCache, RestTemplate restTemplate) {
-        super(scenarioCache, responseCache, restTemplate);
+    @Autowired
+    public EndEstablishedCallCommand(Cache cache, RestTemplate restTemplate) {
+        super(cache, restTemplate);
+    }
+
+    @Override
+    public void setNext(Command command) {
+        super.setNextCommand(command);
+    }
+
+    @Override
+    public void setNextData(CommandData data) {
+        setNextCommandData(data);
     }
 
     @Override
     public void execute(CommandData commandData) {
-        String scenario = commandData.getParent();
-        String url = getResponseCache().getCallsUri(scenario);
-        String callId = getResponseCache().getCallId(scenario);
+        ResponseData responseData = commandData.getResponseData();
+
+        String url = responseData.getCallsUri();
+        String callId = responseData.getCallId();
 
         CallAction request = ModelUtil.getCallActionRequestFromFile((String) commandData.getConfig().get("config"));
-        String sessionToken = getResponseCache().getSessionToken(scenario);
+        String sessionToken = responseData.getSessionToken();
         HttpHeaders requestHeader = ModelUtil.getRequestHeader(sessionToken, HttpHeaderEnum.END_CALL);
 
         // TODO We should refactor this to use Spring Rest Template
@@ -46,9 +59,18 @@ public class EndEstablishedCallCommand extends BaseCommand implements Command {
             logInfoOnStart(callId);
             getRestTemplate().postForObject(builder.toString(), entity, String.class);
             logInfoOnFinish(callId);
+            executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {
             logError(callId, e);
         }
+
+    }
+
+    private CommandData updateNextCommandData(ResponseData responseData) {
+        CommandData nextCommandData = getNextCommandData();
+        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        data.setResponseData(responseData);
+        return data;
     }
 
     private void logInfoOnStart(String callId) {

@@ -1,12 +1,11 @@
 package com.avaya.ecloud.runner;
 
-import com.avaya.ecloud.cache.ScenarioCache;
+import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.configuration.ScenariosConfig;
 import com.avaya.ecloud.executor.Executor;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.utils.ModelUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -26,20 +23,23 @@ public class Runner {
 
     private Map<String, Command> commandsMap;
 
-    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     private Map<String, Map<CommandData, Command>> clients;
 
     private Executor executor;
 
-    private ScenarioCache cache;
+    private Cache cache;
 
     private ScenariosConfig scenariosConfig;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Runner.class);
 
     @Autowired
-    public Runner(@Qualifier("commandsMap") Map<String, Command> commandsMap, Executor executor, ScenarioCache cache, ScenariosConfig scenariosConfig) {
+    public Runner(@Qualifier("commandsMap") Map<String, Command> commandsMap,
+                  Executor executor,
+                  Cache cache,
+                  ScenariosConfig scenariosConfig) {
         this.commandsMap = commandsMap;
         this.clients = new LinkedHashMap<>();
         this.executor = executor;
@@ -50,6 +50,7 @@ public class Runner {
     public Executor getExecutor() {
         return executor;
     }
+
 
     private void setUp() {
         List<ScenariosConfig.Scenario> scenarioList = scenariosConfig.getScenarios();
@@ -95,9 +96,27 @@ public class Runner {
             int scenarioCounter = cache.getNumberOfIterations(scenario);
             for (int i = 0; i < scenarioCounter; i++) {
                 LOGGER.info("EXECUTING_SCENARIO:" + scenario + "_" + i);
-                getExecutor().getExecutorService().execute(() -> executeScenario(clientsMap));
+                executorService.execute(() -> createAndExecuteChain(clientsMap));
             }
         }
+    }
+
+    //TODO refactor
+    private void createAndExecuteChain(Map<CommandData, Command> clientsMap) {
+        Command command = null;
+        CommandData commandData = null;
+
+        ArrayList<Command> commands = new ArrayList(clientsMap.values());
+        ArrayList<CommandData> dataList = new ArrayList(clientsMap.keySet());
+
+        for (int i = commands.size() - 2; i >= 0; i--) {
+            command = commands.get(i);
+            commandData = dataList.get(i);
+            commands.get(i).setNext(commands.get(i + 1));
+            commands.get(i).setNextData(dataList.get(i + 1));
+        }
+
+        command.execute(commandData);
     }
 
     private void executeScenario(Map<CommandData, Command> clientsMap) {
