@@ -11,7 +11,7 @@ public class EventController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventController.class);
 
-    @PostMapping(value = "/subscribeEvent", consumes = "application/vnd.avaya.mpaas.notification+json")
+    @PostMapping(value = "/acceptEvent", consumes = "application/vnd.avaya.mpaas.notification+json")
     public void receiveEvent(@RequestBody String event) {
         LOGGER.info("EVENT:" + event);
         //TODO some logic
