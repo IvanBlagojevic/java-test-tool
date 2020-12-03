@@ -7,7 +7,7 @@ import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.LoginRequest;
 import com.avaya.ecloud.model.response.LoginResponse;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

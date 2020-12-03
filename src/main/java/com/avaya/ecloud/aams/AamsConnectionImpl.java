@@ -80,7 +80,7 @@ public class AamsConnectionImpl implements AamsConnection {
 
     private String getBaseUrl() {
         StringBuilder builder = new StringBuilder();
-        builder.append("https://").append(System.getProperty("aamsIP", "104.155.177.179")).append(":").append(System.getProperty("aamsPort", "7151"));
+        builder.append("https://").append(System.getProperty("aamsIP", "34.70.241.25")).append(":").append(System.getProperty("aamsPort", "7151"));
         return builder.toString();
     }
 

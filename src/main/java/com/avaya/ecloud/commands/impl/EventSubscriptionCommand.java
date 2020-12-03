@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.subscriptions.EventSubscriptionRequest;
@@ -35,7 +35,7 @@ public class EventSubscriptionCommand extends BaseCommand implements Command {
 
         HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.EVENT_SUBSCRIPTION);
 
-        String url = responseData.getEventsUri();
+        String url = responseData.getResourceData().getEventsUri();
         EventSubscriptionRequest request = ModelUtil.getEventSubscriptionRequestFromFile("subscribeEvents.json");
         request.setSessionId(sessionId);
 

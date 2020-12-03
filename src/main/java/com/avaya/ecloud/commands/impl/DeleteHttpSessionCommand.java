@@ -3,7 +3,7 @@ package com.avaya.ecloud.commands.impl;
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class DeleteHttpSessionCommand extends BaseCommand implements Command {
 
     @Override
     public void execute(CommandData commandData) {
-        String deleteSessionUri = commandData.getResponseData().getDeleteSessionUri();
+        String deleteSessionUri = commandData.getResponseData().getResourceData().getDeleteSessionUri();
         HttpHeaders headers = ModelUtil.getRequestHeader(commandData.getResponseData().getSessionToken(), HttpHeaderEnum.DELETE_HTTP_SESSION);
         HttpEntity<?> request = new HttpEntity<>(headers);
         try {

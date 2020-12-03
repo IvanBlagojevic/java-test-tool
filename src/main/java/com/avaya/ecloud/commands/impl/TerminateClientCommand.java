@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.utils.ModelUtil;
@@ -39,7 +39,7 @@ public class TerminateClientCommand extends BaseCommand implements Command {
     @Override
     public void execute(CommandData commandData) {
         ResponseData responseData = commandData.getResponseData();
-        String terminateClientUri = responseData.getTerminateClientUri();
+        String terminateClientUri = responseData.getResourceData().getTerminateClientUri();
         HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.TERMINATE_CLIENT);
         HttpEntity<?> request = new HttpEntity<>(headers);
 

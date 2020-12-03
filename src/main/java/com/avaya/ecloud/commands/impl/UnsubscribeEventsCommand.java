@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.utils.ModelUtil;
@@ -32,11 +32,10 @@ public class UnsubscribeEventsCommand extends BaseCommand implements Command {
 
     @Override
     public void execute(CommandData commandData) {
-        String scenario = commandData.getParent();
         ResponseData responseData = commandData.getResponseData();
         String sessionId = responseData.getSessionId();
 
-        String url = responseData.getEventsUri();
+        String url = responseData.getResourceData().getEventsUri();
 
         HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.UNSUBSCRIBE_EVENTS);
         HttpEntity<?> request = new HttpEntity<>(headers);

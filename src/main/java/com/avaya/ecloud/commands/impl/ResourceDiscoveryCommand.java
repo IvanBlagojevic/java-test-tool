@@ -3,8 +3,8 @@ package com.avaya.ecloud.commands.impl;
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.command.CommandData;
+import com.avaya.ecloud.model.command.ResourceData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
-import com.avaya.ecloud.model.response.resource.Resource;
 import com.avaya.ecloud.model.response.resource.ResourceDiscoveryResponse;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.slf4j.Logger;
@@ -16,8 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 @Component("resourceCommand")
 public class ResourceDiscoveryCommand extends BaseCommand implements Command {
@@ -60,33 +58,13 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
 
     private CommandData getUpdatedCommandData(ResourceDiscoveryResponse response, CommandData commandData) {
         CommandData nextCommandData = getNextCommandData();
-
         CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
         data.setResponseData(commandData.getResponseData());
-
-        data.getResponseData().setWebSocketUri(response.getNotificationService().getWebsocket().getHref());
-        data.getResponseData().setSseUri(response.getNotificationService().getSse().getHref());
-        data.getResponseData().setTerminateClientUri(response.getClientManagement().getTerminateClient().getHref());
-        data.getResponseData().setDeleteSessionUri(response.getSessionManagement().getHref());
-
-        List<Resource> resources = response.getResources();
-
-        for (Resource resource : resources) {
-            String name = resource.getName();
-            String href = resource.getServiceReference().getHref();
-
-            switch (name) {
-                case "calls":
-                    data.getResponseData().setCallsUri(href);
-                    break;
-                case "mpaasevents":
-                    data.getResponseData().setEventsUri(href);
-                    break;
-                case "services":
-                    data.getResponseData().setServicesUri(href);
-                    break;
-            }
-        }
+        data.getResponseData().setResourceData(new ResourceData(response.getNotificationService().getWebsocket().getHref(),
+                response.getNotificationService().getSse().getHref(),
+                response.getClientManagement().getTerminateClient().getHref(),
+                response.getSessionManagement().getHref(),
+                response.getResources()));
         return data;
     }
 

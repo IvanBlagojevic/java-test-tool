@@ -29,8 +29,8 @@ public class ConnectWebSocketCommand extends BaseCommand implements Command {
 
     @Override
     public void execute(CommandData commandData) {
-        String webSocketUri = commandData.getResponseData().getWebSocketUri();
-        String callUri = commandData.getResponseData().getCallsUri();
+        String webSocketUri = commandData.getResponseData().getResourceData().getWebSocketUri();
+        String callUri = commandData.getResponseData().getResourceData().getCallsUri();
         String sessionId = commandData.getResponseData().getSessionId();
         getWebSocketConnectionManager(connection, callUri, webSocketUri).start();
         logInfoOnFinish(sessionId);

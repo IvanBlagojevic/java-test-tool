@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.startAudioCall.AudioCall;
@@ -35,7 +35,7 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
         ResponseData responseData = commandData.getResponseData();
         String sessionId = responseData.getSessionId();
 
-        String url = responseData.getCallsUri();
+        String url = responseData.getResourceData().getCallsUri();
         AudioCall request = ModelUtil.getAudioCallRequestFromFile("startAudioCall.json");
         request.setSessionId(sessionId);
 

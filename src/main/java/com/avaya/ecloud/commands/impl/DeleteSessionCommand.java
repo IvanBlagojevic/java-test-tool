@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
@@ -47,7 +47,7 @@ public class DeleteSessionCommand extends BaseCommand implements Command {
         String sessionId = commandData.getResponseData().getSessionId();
 
         HttpHeaders headers = ModelUtil.getRequestHeader(getCache().getAuthToken(scenario), HttpHeaderEnum.DELETE_SESSION);
-        HttpEntity<?> request = new HttpEntity<>(headers);
+        HttpEntity<String> request = new HttpEntity<>(headers);
 
         StringBuilder builder = new StringBuilder(sessionEndpoint);
         builder.append(sessionId);

@@ -26,7 +26,7 @@ public class ActivateServiceCommand extends BaseCommand implements Command {
 
     @Override
     public void execute(CommandData commandData) {
-        String url = commandData.getResponseData().getServicesUri();
+        String url = commandData.getResponseData().getResourceData().getServicesUri();
         String sessionToken = commandData.getResponseData().getSessionToken();
 
         //TODO what about basic auth header?

@@ -2,7 +2,7 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.response.ResponseData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.endCall.CallAction;
@@ -40,7 +40,7 @@ public class EndEstablishedCallCommand extends BaseCommand implements Command {
     public void execute(CommandData commandData) {
         ResponseData responseData = commandData.getResponseData();
 
-        String url = responseData.getCallsUri();
+        String url = responseData.getResourceData().getCallsUri();
         String callId = responseData.getCallId();
 
         CallAction request = ModelUtil.getCallActionRequestFromFile((String) commandData.getConfig().get("config"));
