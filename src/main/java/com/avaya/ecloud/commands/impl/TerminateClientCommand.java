@@ -49,7 +49,6 @@ public class TerminateClientCommand extends BaseCommand implements Command {
             executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {
             logError(terminateClientUri, e);
-            //throw new RuntimeException(e.getMessage());
         }
 
 

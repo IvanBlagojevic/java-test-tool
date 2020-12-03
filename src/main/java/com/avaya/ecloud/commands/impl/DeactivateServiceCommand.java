@@ -39,20 +39,18 @@ public class DeactivateServiceCommand extends BaseCommand implements Command {
     @Override
     public void execute(CommandData commandData) {
         ResponseData responseData = commandData.getResponseData();
-        String url = responseData.getResourceData().getServicesUri();
-        String sessionToken = responseData.getSessionToken();
 
         // TODO We should refactor (merge) ActiveServiceCommand and DeactiveServiceCommand
         // TODO Since these are using same logic, but action is just different. We will need
         // TODO To refactor Java POJO name for this use case (this can be ACTIVATE or DEACTIVATE)
         // TODO HttpHeaderEnum should be also refactored
-        HttpHeaders requestHeader = ModelUtil.getRequestHeader(sessionToken, HttpHeaderEnum.ACTIVATE_SERVICE);
+        HttpHeaders requestHeader = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.ACTIVATE_SERVICE);
         ActivateService request = ModelUtil.getActivateServiceRequestFromFile((String) commandData.getConfig().get("config"));
 
         HttpEntity<String> entity = ModelUtil.getEntityFromObject(request, requestHeader);
 
         try {
-            getRestTemplate().postForEntity(url, entity, String.class);
+            getRestTemplate().postForEntity(responseData.getResourceData().getServicesUri(), entity, String.class);
             executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

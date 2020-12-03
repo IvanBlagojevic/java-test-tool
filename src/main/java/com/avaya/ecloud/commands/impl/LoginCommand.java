@@ -65,15 +65,12 @@ public class LoginCommand extends BaseCommand implements Command {
         if (commandData.getName().equals("refreshToken") || StringUtils.isEmpty(accessToken)) {
             String accountId = getAccountId(commandData);
             String accountSecret = getAccountSecret(commandData);
-
-            String baseUrl = getCache().getBaseUrl(scenario);
-
             LoginRequest loginRequest = new LoginRequest(accountId, accountSecret);
-
             HttpEntity<String> entity = ModelUtil.getEntityFromObject(loginRequest, ModelUtil.getRequestHeader(null, HttpHeaderEnum.LOGIN));
-
             try {
-                LoginResponse response = getRestTemplate().postForObject(getLoginUrl(baseUrl), entity, LoginResponse.class);
+                LoginResponse response = getRestTemplate().postForObject(getLoginUrl(getCache().getBaseUrl(scenario)),
+                        entity,
+                        LoginResponse.class);
                 accessToken = response.getAccessToken();
                 getCache().saveAuthToken(accessToken);
                 logInfo(commandData.getName(), loginRequest.getAccountId(), accessToken);

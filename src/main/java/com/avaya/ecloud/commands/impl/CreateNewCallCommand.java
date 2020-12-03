@@ -35,7 +35,6 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
         ResponseData responseData = commandData.getResponseData();
         String sessionId = responseData.getSessionId();
 
-        String url = responseData.getResourceData().getCallsUri();
         AudioCall request = ModelUtil.getAudioCallRequestFromFile("startAudioCall.json");
         request.setSessionId(sessionId);
 
@@ -46,7 +45,12 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
 
         try {
             logInfoOnStart(sessionId);
-            ResponseEntity<String> response = getRestTemplate().exchange(url, HttpMethod.POST, entity, String.class);
+
+            ResponseEntity<String> response = getRestTemplate().exchange(responseData.getResourceData().getCallsUri(),
+                    HttpMethod.POST,
+                    entity,
+                    String.class);
+
             String callId = getCallIdFromResponse(response.getBody());
             responseData.setCallId(callId);
             logInfoOnFinish(sessionId, callId);

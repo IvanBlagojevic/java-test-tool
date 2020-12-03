@@ -19,7 +19,6 @@ public class CacheImpl implements Cache {
 
     @Override
     public String getAccountId(String scenarioName) {
-
         return getScenarioDetails(scenarioName).getAccountId();
     }
 
@@ -80,7 +79,6 @@ public class CacheImpl implements Cache {
         for (String scenario : getScenarios()) {
             getScenarioDetails(scenario).setAuthToken(auth);
         }
-
     }
 
     @Override

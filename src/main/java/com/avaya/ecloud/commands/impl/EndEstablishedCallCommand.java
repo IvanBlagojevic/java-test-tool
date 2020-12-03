@@ -39,17 +39,14 @@ public class EndEstablishedCallCommand extends BaseCommand implements Command {
     @Override
     public void execute(CommandData commandData) {
         ResponseData responseData = commandData.getResponseData();
-
-        String url = responseData.getResourceData().getCallsUri();
         String callId = responseData.getCallId();
 
         CallAction request = ModelUtil.getCallActionRequestFromFile((String) commandData.getConfig().get("config"));
-        String sessionToken = responseData.getSessionToken();
-        HttpHeaders requestHeader = ModelUtil.getRequestHeader(sessionToken, HttpHeaderEnum.END_CALL);
+        HttpHeaders requestHeader = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.END_CALL);
 
         // TODO We should refactor this to use Spring Rest Template
         // TODO Instead of StringBuilder approach
-        StringBuilder builder = new StringBuilder(url);
+        StringBuilder builder = new StringBuilder(responseData.getResourceData().getCallsUri());
         builder.append("/");
         builder.append(callId);
 

@@ -35,7 +35,6 @@ public class EventSubscriptionCommand extends BaseCommand implements Command {
 
         HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.EVENT_SUBSCRIPTION);
 
-        String url = responseData.getResourceData().getEventsUri();
         EventSubscriptionRequest request = ModelUtil.getEventSubscriptionRequestFromFile("subscribeEvents.json");
         request.setSessionId(sessionId);
 
@@ -43,7 +42,11 @@ public class EventSubscriptionCommand extends BaseCommand implements Command {
 
         try {
             logInfoOnStart(sessionId);
-            ResponseEntity<String> response = getRestTemplate().postForEntity(url, entity, String.class);
+
+            ResponseEntity<String> response = getRestTemplate().postForEntity(responseData.getResourceData().getEventsUri(),
+                    entity,
+                    String.class);
+
             logInfoOnFinish(sessionId, ModelUtil.getEventSubscriptionResponse(response.getBody()).getSubscribedEvents().getEvents());
             executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {

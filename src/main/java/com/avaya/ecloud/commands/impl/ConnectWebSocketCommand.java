@@ -29,11 +29,12 @@ public class ConnectWebSocketCommand extends BaseCommand implements Command {
 
     @Override
     public void execute(CommandData commandData) {
-        String webSocketUri = commandData.getResponseData().getResourceData().getWebSocketUri();
-        String callUri = commandData.getResponseData().getResourceData().getCallsUri();
-        String sessionId = commandData.getResponseData().getSessionId();
-        getWebSocketConnectionManager(connection, callUri, webSocketUri).start();
-        logInfoOnFinish(sessionId);
+
+        getWebSocketConnectionManager(connection,
+                commandData.getResponseData().getResourceData().getCallsUri(),
+                commandData.getResponseData().getResourceData().getWebSocketUri()).start();
+
+        logInfoOnFinish(commandData.getResponseData().getSessionId());
         executeNext(updateNextCommandData(commandData));
     }
 

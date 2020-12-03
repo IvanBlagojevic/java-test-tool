@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,12 +33,14 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
     public void execute(CommandData commandData) {
         HttpHeaders requestHeader = ModelUtil.getRequestHeader(commandData.getResponseData().getSessionToken(), HttpHeaderEnum.RESOURCE_DISCOVERY);
         HttpEntity<String> entity = ModelUtil.getEntityFromObject(null, requestHeader);
-        String userAgentURL = commandData.getResponseData().getUserAgentURL();
         try {
             logInfoOnStart(commandData.getResponseData().getSessionId());
-            ResourceDiscoveryResponse response = getRestTemplate().exchange(userAgentURL, HttpMethod.GET, entity, ResourceDiscoveryResponse.class).getBody();
+            ResponseEntity<ResourceDiscoveryResponse> response = getRestTemplate().exchange(commandData.getResponseData().getUserAgentURL(),
+                    HttpMethod.GET,
+                    entity,
+                    ResourceDiscoveryResponse.class);
             logInfoOnFinish(commandData.getResponseData().getSessionId());
-            executeNext(getUpdatedCommandData(response, commandData));
+            executeNext(getUpdatedCommandData(response.getBody(), commandData));
         } catch (Exception e) {
             logError(e);
             throw new RuntimeException(e.getMessage());

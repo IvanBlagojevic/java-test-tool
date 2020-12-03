@@ -35,12 +35,10 @@ public class UnsubscribeEventsCommand extends BaseCommand implements Command {
         ResponseData responseData = commandData.getResponseData();
         String sessionId = responseData.getSessionId();
 
-        String url = responseData.getResourceData().getEventsUri();
-
         HttpHeaders headers = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.UNSUBSCRIBE_EVENTS);
         HttpEntity<?> request = new HttpEntity<>(headers);
 
-        StringBuilder builder = new StringBuilder(url);
+        StringBuilder builder = new StringBuilder(responseData.getResourceData().getEventsUri());
         builder.append("?sessionId=");
         builder.append(sessionId);
 
