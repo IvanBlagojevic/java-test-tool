@@ -43,9 +43,9 @@ abstract class BaseCommand {
     }
 
     public CommandData getNextCommandData() {
-        if (Objects.isNull(nextCommandData)) {
-            nextCommandData = new CommandData();
-        }
+//        if (Objects.isNull(nextCommandData)) {
+//            nextCommandData = new CommandData();
+//        }
         return nextCommandData;
     }
 

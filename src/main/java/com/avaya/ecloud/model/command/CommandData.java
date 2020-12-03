@@ -20,6 +20,10 @@ public class CommandData {
         this.config = config;
     }
 
+    public CommandData(ResponseData responseData) {
+        this.responseData = responseData;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

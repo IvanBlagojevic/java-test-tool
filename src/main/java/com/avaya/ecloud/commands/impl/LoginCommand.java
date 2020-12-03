@@ -7,6 +7,7 @@ import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.LoginRequest;
 import com.avaya.ecloud.model.response.LoginResponse;
+import com.avaya.ecloud.model.response.ResponseData;
 import com.avaya.ecloud.utils.ModelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 @Component("loginCommand")
 @Scope("prototype")
@@ -82,15 +85,19 @@ public class LoginCommand extends BaseCommand implements Command {
 
         }
 
-        if (!commandData.getName().equals("refreshToken")){
-            executeNext(updateNextCommandData(accessToken));
-        }
-
+        executeNext(updateNextCommandData(accessToken));
     }
 
     private CommandData updateNextCommandData(String authToken) {
         CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        CommandData data;
+
+        if (Objects.isNull(nextCommandData)) {
+            data = new CommandData(new ResponseData());
+        } else {
+            data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        }
+
         data.getResponseData().setAuthToken(authToken);
         return data;
     }

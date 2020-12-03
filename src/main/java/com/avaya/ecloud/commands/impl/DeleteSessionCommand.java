@@ -16,6 +16,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 
 @Component("deleteSessionCommand")
 public class DeleteSessionCommand extends BaseCommand implements Command {
@@ -63,7 +65,14 @@ public class DeleteSessionCommand extends BaseCommand implements Command {
 
     private CommandData updateNextCommandData(ResponseData responseData) {
         CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        CommandData data;
+
+        if (Objects.isNull(nextCommandData)) {
+            data = new CommandData();
+        } else {
+            data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        }
+
         data.setResponseData(responseData);
         return data;
     }
