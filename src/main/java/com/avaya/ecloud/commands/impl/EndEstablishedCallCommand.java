@@ -41,7 +41,7 @@ public class EndEstablishedCallCommand extends BaseCommand implements Command {
         ResponseData responseData = commandData.getResponseData();
         String callId = responseData.getCallId();
 
-        CallAction request = ModelUtil.getCallActionRequestFromFile((String) commandData.getConfig().get("config"));
+        CallAction request = ModelUtil.getCallActionRequestFromFile("endCall.json");
         HttpHeaders requestHeader = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.END_CALL);
 
         // TODO We should refactor this to use Spring Rest Template
@@ -54,7 +54,7 @@ public class EndEstablishedCallCommand extends BaseCommand implements Command {
 
         try {
             logInfoOnStart(callId);
-            getRestTemplate().postForObject(builder.toString(), entity, String.class);
+            getRestTemplate().postForEntity(builder.toString(), entity, String.class);
             logInfoOnFinish(callId);
             executeNext(updateNextCommandData(responseData));
         } catch (Exception e) {

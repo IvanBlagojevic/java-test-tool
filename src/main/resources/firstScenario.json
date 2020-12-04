@@ -2,7 +2,7 @@
   "baseUrl": "https://lab6.mpaaservice.com:443/",
   "conferencesCounter": 1,
   "numberOfIterations": 1,
-  "sessionCounter": 50,
+  "sessionCounter": 10,
   "rampTime": 5,
   "accountId": "89c5dd01960ed05fb347eb1bd0c3c1cc15c54aa6",
   "accountSecret": "42dfd014-8521-404d-817c-2308348fc5fb",

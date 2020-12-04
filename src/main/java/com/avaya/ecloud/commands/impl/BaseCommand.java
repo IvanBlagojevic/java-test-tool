@@ -3,6 +3,7 @@ package com.avaya.ecloud.commands.impl;
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.command.CommandData;
+import com.avaya.ecloud.model.command.ResponseData;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
@@ -43,6 +44,9 @@ abstract class BaseCommand {
     }
 
     public CommandData getNextCommandData() {
+        if (Objects.isNull(nextCommandData)) {
+            nextCommandData = new CommandData(new ResponseData());
+        }
         return nextCommandData;
     }
 

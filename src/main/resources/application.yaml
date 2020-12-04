@@ -8,52 +8,26 @@ mpaas:
         config: firstScenario.json
       tasks:
         - name: login
+#        login + createSubscription
         - name: createConference
           params:
             config: createConf.json
         - name: createSession
           params:
             config: createSession.json
-        - name: discoverResources
-        - name: connectWebSocket
-        - name: subscribeToEvents
-        - name: activateCall
-        - name: startAudioCall
+        - name: clientConnectSession
+#        - name: discoverResources
+#        - name: connectWebSocket
+#        - name: subscribeToEvents
+#        - name: activateCall
+#        - name: startAudioCall
         - name: timeWait
           params:
             time: 10000
-        - name: unsubscribeFromEvents
-        - name: endEstablishedCall
-          params:
-            config: endCall.json
-        - name:  deactivateCall
-          params:
-            config: deactivateCalls.json
-        - name: terminateClient
-        - name: deleteHttpSession
-        - name: deleteSession
-#    - name: SECOND_SCENARIO
-#      params:
-#        config: firstScenario.json
-#      tasks:
-#        - name: login
-#        - name: createConference
-#          params:
-#            config: createConf.json
-#        - name: createSession
-#          params:
-#            config: createSession.json
-#        - name: timeWait
-#          params:
-#            time: 1000
-#        - name: clientConnectSession
+        - name: clientDisconnectSession
 #        - name: unsubscribeFromEvents
 #        - name: endEstablishedCall
-#          params:
-#            config: endCall.json
-#        - name:  deactivateCall
-#          params:
-#            config: deactivateCalls.json
+#        - name: deactivateCall
 #        - name: terminateClient
 #        - name: deleteHttpSession
 #        - name: deleteSession

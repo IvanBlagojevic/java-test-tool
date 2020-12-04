@@ -31,7 +31,8 @@ public class CommandsConfig {
                           @Qualifier("terminateClientCommand") Command terminateClientCommand,
                           @Qualifier("deleteHttpSessionCommand") Command deleteHttpSessionCommand,
                           @Qualifier("deleteSessionCommand") Command deleteSessionCommand,
-                          @Qualifier("subscriptionCommand") Command subscriptionCommand) {
+                          @Qualifier("subscriptionCommand") Command subscriptionCommand,
+                          @Qualifier("clientDisconnectSession") Command clientDisconnectSession) {
         setCommandMap(loginCommand,
                 conferenceCommand,
                 sessionCommand,
@@ -48,7 +49,8 @@ public class CommandsConfig {
                 terminateClientCommand,
                 deleteHttpSessionCommand,
                 deleteSessionCommand,
-                subscriptionCommand);
+                subscriptionCommand,
+                clientDisconnectSession);
 
     }
 
@@ -68,7 +70,8 @@ public class CommandsConfig {
                                Command terminateClientCommand,
                                Command deleteHttpSessionCommand,
                                Command deleteSessionCommand,
-                               Command subscriptionCommand) {
+                               Command subscriptionCommand,
+                               Command clientDisconnectSession) {
         commandMap = new HashMap<>();
         commandMap.put("createConference", conferenceCommand);
         commandMap.put("login", loginCommand);
@@ -87,6 +90,7 @@ public class CommandsConfig {
         commandMap.put("deleteHttpSession", deleteHttpSessionCommand);
         commandMap.put("deleteSession", deleteSessionCommand);
         commandMap.put("subscriptionCommand", subscriptionCommand);
+        commandMap.put("clientDisconnectSession", clientDisconnectSession);
     }
 
     @Bean

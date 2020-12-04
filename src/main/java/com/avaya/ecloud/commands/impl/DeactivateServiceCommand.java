@@ -45,7 +45,7 @@ public class DeactivateServiceCommand extends BaseCommand implements Command {
         // TODO To refactor Java POJO name for this use case (this can be ACTIVATE or DEACTIVATE)
         // TODO HttpHeaderEnum should be also refactored
         HttpHeaders requestHeader = ModelUtil.getRequestHeader(responseData.getSessionToken(), HttpHeaderEnum.ACTIVATE_SERVICE);
-        ActivateService request = ModelUtil.getActivateServiceRequestFromFile((String) commandData.getConfig().get("config"));
+        ActivateService request = ModelUtil.getActivateServiceRequestFromFile("deactivateCalls.json");
 
         HttpEntity<String> entity = ModelUtil.getEntityFromObject(request, requestHeader);
 
