@@ -2,7 +2,6 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +23,13 @@ public class TimeWaitCommand extends BaseCommand implements Command {
     @Override
     public void execute(CommandData commandData) {
         Integer time = (Integer) commandData.getConfig().get("time");
-        LOGGER.info("GOING_TO_SLEEP_FOR_" + time + "_MILLISECONDS");
+        LOGGER.info("WAITING_FOR_" + time + "_MILLISECONDS");
         try {
             Thread.sleep(time);
-            executeNext(updateNextCommandData(commandData.getResponseData()));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-    }
-
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(responseData);
-        return data;
     }
 
     @Override

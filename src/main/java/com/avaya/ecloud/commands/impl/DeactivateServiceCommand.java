@@ -51,18 +51,10 @@ public class DeactivateServiceCommand extends BaseCommand implements Command {
 
         try {
             getRestTemplate().postForEntity(responseData.getResourceData().getServicesUri(), entity, String.class);
-            executeNext(updateNextCommandData(responseData));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         }
-    }
-
-
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(responseData);
-        return data;
     }
 }

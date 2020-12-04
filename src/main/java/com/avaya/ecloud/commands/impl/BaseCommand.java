@@ -44,10 +44,22 @@ abstract class BaseCommand {
     }
 
     public CommandData getNextCommandData() {
-        if (Objects.isNull(nextCommandData)) {
-            nextCommandData = new CommandData(new ResponseData());
-        }
         return nextCommandData;
+    }
+
+    public CommandData getUpdatedCommandData(CommandData commandData) {
+        CommandData nextCommandData = getNextCommandData();
+        CommandData data;
+
+        if (Objects.isNull(nextCommandData)) {
+            data = new CommandData(new ResponseData());
+        } else {
+            data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        }
+
+        data.setResponseData(commandData.getResponseData());
+
+        return data;
     }
 
     public void setNextCommandData(CommandData nextCommandData) {

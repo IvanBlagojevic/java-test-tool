@@ -2,7 +2,6 @@ package com.avaya.ecloud.commands.impl;
 
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
-import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.command.CommandData;
 import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
@@ -15,8 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Objects;
 
 
 @Component("deleteSessionCommand")
@@ -55,26 +52,11 @@ public class DeleteSessionCommand extends BaseCommand implements Command {
         try {
             getRestTemplate().exchange(builder.toString(), HttpMethod.DELETE, request, String.class);
             logInfoOnFinish(sessionId);
-            executeNext(updateNextCommandData(commandData.getResponseData()));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             logError(sessionId, e);
             throw new RuntimeException(e.getMessage());
         }
-
-    }
-
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data;
-
-        if (Objects.isNull(nextCommandData)) {
-            data = new CommandData();
-        } else {
-            data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        }
-
-        data.setResponseData(responseData);
-        return data;
     }
 
     private void logInfoOnFinish(String sessionId) {

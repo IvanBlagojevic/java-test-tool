@@ -56,18 +56,10 @@ public class EndEstablishedCallCommand extends BaseCommand implements Command {
             logInfoOnStart(callId);
             getRestTemplate().postForEntity(builder.toString(), entity, String.class);
             logInfoOnFinish(callId);
-            executeNext(updateNextCommandData(responseData));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             logError(callId, e);
         }
-
-    }
-
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(responseData);
-        return data;
     }
 
     private void logInfoOnStart(String callId) {

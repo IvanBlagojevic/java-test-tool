@@ -3,6 +3,7 @@ package com.avaya.ecloud.commands.impl;
 import com.avaya.ecloud.cache.Cache;
 import com.avaya.ecloud.commands.Command;
 import com.avaya.ecloud.model.command.CommandData;
+import com.avaya.ecloud.model.command.ResponseData;
 import com.avaya.ecloud.model.enums.ApiUrlEnum;
 import com.avaya.ecloud.model.enums.HttpHeaderEnum;
 import com.avaya.ecloud.model.requests.LoginRequest;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 @Component("loginCommand")
 @Scope("prototype")
@@ -77,15 +80,19 @@ public class LoginCommand extends BaseCommand implements Command {
                 throw new RuntimeException(e.getMessage());
             }
         }
-
-        if (!commandData.getName().equals("refreshToken")) {
-            executeNext(updateNextCommandData(accessToken));
-        }
+        executeNext(updateNextCommandData(accessToken));
     }
 
     private CommandData updateNextCommandData(String authToken) {
         CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        CommandData data;
+
+        if (Objects.isNull(nextCommandData)) {
+            data = new CommandData(new ResponseData());
+        } else {
+            data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+        }
+
         data.getResponseData().setAuthToken(authToken);
         return data;
     }

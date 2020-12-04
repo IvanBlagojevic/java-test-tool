@@ -45,20 +45,12 @@ public class UnsubscribeEventsCommand extends BaseCommand implements Command {
         try {
             getRestTemplate().exchange(builder.toString(), HttpMethod.DELETE, request, String.class);
             logInfoOnFinish(sessionId);
-            executeNext(updateNextCommandData(responseData));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             logError(sessionId, e);
         }
-
-
     }
 
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(responseData);
-        return data;
-    }
 
     @Override
     public void setNextData(CommandData data) {

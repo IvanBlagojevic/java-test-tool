@@ -54,18 +54,11 @@ public class CreateNewCallCommand extends BaseCommand implements Command {
             String callId = getCallIdFromResponse(response.getBody());
             responseData.setCallId(callId);
             logInfoOnFinish(sessionId, callId);
-            executeNext(updateNextCommandData(responseData));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             logError(sessionId, e);
             throw new RuntimeException(e.getMessage());
         }
-    }
-
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(responseData);
-        return data;
     }
 
     @Override

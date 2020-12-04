@@ -34,14 +34,6 @@ public class ClientConnectSessionCommand extends BaseCommand implements Command 
         executeNext(getUpdatedCommandData(commandData));
     }
 
-    private CommandData getUpdatedCommandData(CommandData commandData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(commandData.getResponseData());
-        return data;
-    }
-
-
     private List<Command> getCommands() {
         return this.commands;
     }

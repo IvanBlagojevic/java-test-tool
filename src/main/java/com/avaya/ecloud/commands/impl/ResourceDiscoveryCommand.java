@@ -40,7 +40,7 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
                     entity,
                     ResourceDiscoveryResponse.class);
             logInfoOnFinish(commandData.getResponseData().getSessionId());
-            executeNext(getUpdatedCommandData(response.getBody(), commandData));
+            executeNext(updateNexCommandData(response.getBody(), commandData));
         } catch (Exception e) {
             logError(e);
             throw new RuntimeException(e.getMessage());
@@ -59,9 +59,8 @@ public class ResourceDiscoveryCommand extends BaseCommand implements Command {
     }
 
 
-    private CommandData getUpdatedCommandData(ResourceDiscoveryResponse response, CommandData commandData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
+    private CommandData updateNexCommandData(ResourceDiscoveryResponse response, CommandData commandData) {
+        CommandData data = getUpdatedCommandData(commandData);
         data.setResponseData(commandData.getResponseData());
         data.getResponseData().setResourceData(new ResourceData(response.getNotificationService().getWebsocket().getHref(),
                 response.getNotificationService().getSse().getHref(),

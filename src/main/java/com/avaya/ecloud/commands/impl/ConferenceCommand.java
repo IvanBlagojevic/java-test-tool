@@ -80,7 +80,7 @@ public class ConferenceCommand extends BaseCommand implements Command {
             }
             getCache().saveConferenceId(confIds);
         }
-        executeNext(getNextCommandData());
+        executeNext(getUpdatedCommandData(commandData));
 
     }
 

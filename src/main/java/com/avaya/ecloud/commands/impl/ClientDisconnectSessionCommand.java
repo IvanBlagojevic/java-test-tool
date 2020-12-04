@@ -40,13 +40,6 @@ public class ClientDisconnectSessionCommand extends BaseCommand implements Comma
         executeNext(getUpdatedCommandData(commandData));
     }
 
-    private CommandData getUpdatedCommandData(CommandData commandData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(commandData.getResponseData());
-        return data;
-    }
-
     @Override
     public void setNext(Command command) {
         super.setNextCommand(command);

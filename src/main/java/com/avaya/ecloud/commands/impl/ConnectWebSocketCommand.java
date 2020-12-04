@@ -35,20 +35,13 @@ public class ConnectWebSocketCommand extends BaseCommand implements Command {
                 commandData.getResponseData().getResourceData().getWebSocketUri()).start();
 
         logInfoOnFinish(commandData.getResponseData().getSessionId());
-        executeNext(updateNextCommandData(commandData));
+        executeNext(getUpdatedCommandData(commandData));
     }
 
     private WebSocketConnectionManager getWebSocketConnectionManager(AamsConnection connection, String callUri, String webSocketUri) {
         return new WebSocketConnectionManager(new StandardWebSocketClient(),
                 new ClientWebSocketHandler(callUri, connection),
                 webSocketUri);
-    }
-
-    private CommandData updateNextCommandData(CommandData commandData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(commandData.getResponseData());
-        return data;
     }
 
     @Override

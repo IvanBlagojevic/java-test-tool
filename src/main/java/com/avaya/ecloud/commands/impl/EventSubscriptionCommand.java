@@ -42,26 +42,15 @@ public class EventSubscriptionCommand extends BaseCommand implements Command {
 
         try {
             logInfoOnStart(sessionId);
-
             ResponseEntity<String> response = getRestTemplate().postForEntity(responseData.getResourceData().getEventsUri(),
                     entity,
                     String.class);
-
             logInfoOnFinish(sessionId, ModelUtil.getEventSubscriptionResponse(response.getBody()).getSubscribedEvents().getEvents());
-            executeNext(updateNextCommandData(responseData));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             logError(sessionId, e);
             throw new RuntimeException(e.getMessage());
         }
-
-    }
-
-
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(responseData);
-        return data;
     }
 
     @Override

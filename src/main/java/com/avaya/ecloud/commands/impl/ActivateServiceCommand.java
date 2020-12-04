@@ -37,19 +37,11 @@ public class ActivateServiceCommand extends BaseCommand implements Command {
 
         try {
             getRestTemplate().postForEntity(url, entity, String.class);
-            executeNext(updateNextCommandData(commandData));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         }
-    }
-
-
-    private CommandData updateNextCommandData(CommandData commandData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(commandData.getResponseData());
-        return data;
     }
 
     @Override

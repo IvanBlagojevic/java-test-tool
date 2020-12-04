@@ -46,19 +46,10 @@ public class TerminateClientCommand extends BaseCommand implements Command {
         try {
             getRestTemplate().exchange(terminateClientUri, HttpMethod.DELETE, request, String.class);
             logInfoOnFinish(terminateClientUri);
-            executeNext(updateNextCommandData(responseData));
+            executeNext(getUpdatedCommandData(commandData));
         } catch (Exception e) {
             logError(terminateClientUri, e);
         }
-
-
-    }
-
-    private CommandData updateNextCommandData(ResponseData responseData) {
-        CommandData nextCommandData = getNextCommandData();
-        CommandData data = new CommandData(nextCommandData.getName(), nextCommandData.getParent(), nextCommandData.getResponseData(), nextCommandData.getConfig());
-        data.setResponseData(responseData);
-        return data;
     }
 
 
